@@ -1,0 +1,111 @@
+// ============================================================
+// KeyLens – Stopword Lists (DE / EN / FR / ES / IT)
+// Portiert aus KeywordSystem/stopwords.mjs
+// ============================================================
+
+const STOPWORDS = {
+  de: new Set([
+    'der','die','das','den','dem','des','ein','eine','einen','einem','einer','eines',
+    'und','oder','aber','doch','nicht','kein','keine','keinen','keinem','keiner','keines',
+    'ist','sind','war','waren','wird','werden','wurde','wurden','hat','haben','hatte','hatten',
+    'ich','du','er','sie','es','wir','ihr','mich','dich','sich','uns','euch',
+    'mir','dir','ihm','ihnen','ihn',
+    'in','an','auf','aus','bei','bis','durch','für','gegen','hinter','mit','nach','neben',
+    'ohne','seit','über','um','unter','vor','von','während','wegen','zu','zwischen',
+    'als','wie','wenn','ob','dass','weil','da','damit','obwohl',
+    'auch','noch','schon','nur','immer','sehr','mehr','viel','viele','alle','alles',
+    'man','jeder','jede','jedes','dieser','diese','dieses','diesen','diesem',
+    'welcher','welche','welches','solcher','solche','solches',
+    'hier','dort','so','dann','denn','nun','ja','nein','nie',
+    'kann','muss','soll','darf','mag','will','würde','könnte','müsste','sollte',
+    'beim','ins','ans','zum','zur','vom','im','am','ab',
+    'was','wer','wo','wann','warum','woher','wohin','womit','worüber',
+    'jetzt','heute','morgen','gestern','mal','oft','selten','meist','ganz',
+    'bereits','erst','wieder','bisher','bald','zuerst',
+    'etwas','jemand','niemand','irgendwie','irgendwann',
+    'pro','je','per','via','laut','trotz','statt','sowie',
+    'gut','neue','neuen','neuer','neues','großen','kleine','kleinen',
+    'sein','seine','seinen','seinem','ihrer','ihrem','ihren',
+    'dabei','davon','dazu','daher','danach','davor','darin','daraus',
+    'jedoch','zwar','deshalb','deswegen','darum','also','somit','folglich',
+  ]),
+  en: new Set([
+    'the','a','an','and','or','but','not','no','nor','so','yet','for','of','in','on',
+    'at','to','by','up','as','if','is','are','was','were','be','been','being',
+    'have','has','had','do','does','did','will','would','could','should','may','might',
+    'must','shall','can','need','ought','used',
+    'i','you','he','she','it','we','they','me','him','her','us','them',
+    'my','your','his','its','our','their','mine','yours','hers','ours','theirs',
+    'this','that','these','those','which','who','whom','whose','what','where','when','why','how',
+    'all','each','every','both','few','more','most','other','some','such','own',
+    'into','from','with','about','against','between','through','during','before',
+    'after','above','below','over','under','again','further','then','once',
+    'here','there','than','too','very','just','also','well','any','only',
+    'same','now','still','even','back','already','out','away','always','never','often',
+    'get','got','go','went','come','came','make','made','know','think','say','take','see',
+    'look','use','find','give','tell','work','call','try','ask','feel','become',
+    'leave','put','mean','keep','let','begin','show','hear','play','run','move','live',
+    'write','sit','stand','lose','pay','meet','include','continue','set',
+    'change','lead','understand','watch','follow','stop','read','spend','grow',
+    'open','walk','win','offer','remember','buy','wait','serve','send','expect',
+    'build','stay','fall','cut','reach','decide','pull','break',
+    'want','start','turn','help','talk',
+    'new','good','old','great','long','little','right','big','high','small',
+    'large','next','early','young','important','public','bad','able',
+    'because','without','really','much','way','even','thing','things',
+    'time','year','people','day',
+  ]),
+  fr: new Set([
+    'le','la','les','un','une','des','du','de','au','aux','et','ou','mais','donc','or',
+    'ni','car','ne','pas','plus','point','jamais','rien','que','qui','quoi','dont','où',
+    'je','tu','il','elle','nous','vous','ils','elles','me','te','se','lui','leur','y','en',
+    'mon','ton','son','ma','ta','sa','notre','votre','mes','tes','ses','nos','vos','leurs',
+    'ce','cet','cette','ces','ceci','cela','celui','celle','ceux','celles',
+    'est','sont','était','étaient','sera','seront','avoir','été','fait','faire',
+    'dans','sur','sous','avec','sans','pour','par','vers','chez','entre','depuis',
+    'avant','après','pendant','lors','dès','quand','si','comme','bien','très',
+    'tout','tous','toutes','toute','aucun','aucune','chaque','même','autre','autres',
+    'moins','aussi','encore','déjà','enfin','seulement','souvent',
+    'ici','là','donc','alors','ainsi','puis','ensuite',
+  ]),
+  es: new Set([
+    'el','la','los','las','un','una','unos','unas','de','del','al','a','en','con','por',
+    'para','sin','sobre','entre','desde','hasta','ante','bajo','tras','durante','mediante',
+    'y','o','u','pero','sino','mas','aunque','porque','pues','si','cuando','que','como',
+    'ya','no','ni','más','menos','muy','bien','tan','tanto','mucho','poco','algo','nada',
+    'yo','tú','él','ella','nosotros','vosotros','ellos','ellas','usted','ustedes',
+    'me','te','se','le','lo','nos','os','les',
+    'mi','tu','su','nuestro','vuestro','mío','tuyo','suyo',
+    'este','esta','estos','estas','ese','esa','esos','esas','aquel','aquella',
+    'que','quien','cual','cuales','cuyo','donde','cuando','como','cuanto',
+    'es','son','era','eran','fue','fueron','ser','estar','hay','haber','tener','hacer',
+    'así','también','todo','todos','toda','todas','cada','mismo','algún','alguna',
+    'siempre','nunca','aquí','allí','ahí','entonces','después','antes','ahora',
+  ]),
+  it: new Set([
+    'il','lo','la','i','gli','le','un','uno','una','del','della','dei','degli','delle',
+    'al','alla','ai','agli','alle','dal','dalla','dai','dagli','dalle',
+    'nel','nella','nei','negli','nelle','sul','sulla','sui','sugli','sulle',
+    'di','da','in','con','su','per','tra','fra','a','e','o','ma','però','quindi',
+    'non','né','se','come','che','quando','dove','perché','poiché','affinché',
+    'io','tu','lui','lei','noi','voi','loro','mi','ti','si','ci','vi','li',
+    'mio','mia','tuoi','tua','suo','sua','nostro','nostra','vostro','vostra',
+    'questo','questa','questi','queste','quello','quella','quelli','quelle',
+    'chi','che','cui','quale','quali','dove','quando','come','quanto',
+    'è','sono','era','erano','sarà','saranno','essere','avere','fare','stare',
+    'più','meno','molto','poco','tanto','troppo','già','ancora','sempre','mai',
+    'qui','là','così','anche','poi','prima','dopo','ora','adesso','subito',
+    'tutto','tutti','tutta','tutte','ogni','nessuno','qualcuno','qualcosa',
+  ]),
+};
+
+export function getStopwords(lang) {
+  const base = STOPWORDS[lang] || STOPWORDS['en'];
+  if (lang !== 'en') return new Set([...base, ...STOPWORDS['en']]);
+  return base;
+}
+
+export const ALL_STOPWORDS = new Set([
+  ...STOPWORDS.de, ...STOPWORDS.en,
+  ...STOPWORDS.fr, ...STOPWORDS.es, ...STOPWORDS.it,
+]);

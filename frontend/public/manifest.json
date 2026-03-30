@@ -1,0 +1,19 @@
+{
+  "name": "KeyLens – Keyword Analysis Engine",
+  "short_name": "KeyLens",
+  "description": "AI-powered SEO keyword extraction and management tool",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0f1a",
+  "theme_color": "#2563EB",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "business", "utilities"]
+}
