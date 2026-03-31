@@ -72,3 +72,4 @@ cd frontend && npm run build
 npx wrangler d1 create keylens-db
 npx wrangler d1 execute keylens-db --file=../schema.sql
 ```
+ 
