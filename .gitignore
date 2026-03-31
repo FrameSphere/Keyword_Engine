@@ -1,3 +1,4 @@
 deploy.sh
 dev.sh
 DEPLOY.txt
+worker/node_modules/

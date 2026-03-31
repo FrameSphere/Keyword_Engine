@@ -4,7 +4,7 @@
 const BASE = import.meta.env.VITE_API_URL || '/api';
 
 function getToken() {
-  return localStorage.getItem('keylens_token');
+  return localStorage.getItem('keyscope_token');
 }
 
 async function req(path, options = {}) {

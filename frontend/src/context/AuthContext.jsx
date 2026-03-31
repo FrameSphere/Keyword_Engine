@@ -8,31 +8,31 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('keylens_token');
+    const token = localStorage.getItem('keyscope_token');
     if (!token) { setLoading(false); return; }
     api.auth.me()
       .then(d => setUser(d.user))
-      .catch(() => localStorage.removeItem('keylens_token'))
+      .catch(() => localStorage.removeItem('keyscope_token'))
       .finally(() => setLoading(false));
   }, []);
 
   const login = async (email, password) => {
     const d = await api.auth.login(email, password);
-    localStorage.setItem('keylens_token', d.token);
+    localStorage.setItem('keyscope_token', d.token);
     setUser(d.user);
     return d;
   };
 
   const register = async (email, password) => {
     const d = await api.auth.register(email, password);
-    localStorage.setItem('keylens_token', d.token);
+    localStorage.setItem('keyscope_token', d.token);
     setUser(d.user);
     return d;
   };
 
   const logout = async () => {
     await api.auth.logout().catch(() => {});
-    localStorage.removeItem('keylens_token');
+    localStorage.removeItem('keyscope_token');
     setUser(null);
   };
 

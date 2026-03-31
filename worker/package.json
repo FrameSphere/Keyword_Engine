@@ -1,13 +1,13 @@
 {
-  "name": "keylens-worker",
+  "name": "keyscope-worker",
   "version": "1.0.0",
-  "description": "KeyLens API Worker – Cloudflare Workers",
+  "description": "KeyScope API Worker – Cloudflare Workers",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "db:init": "wrangler d1 execute keylens-db --file=../schema.sql"
+    "db:init": "wrangler d1 execute keyscope-db --file=../schema.sql"
   },
   "devDependencies": {
     "wrangler": "^3.0.0"

@@ -1,6 +1,6 @@
 {
-  "name": "KeyLens – Keyword Analysis Engine",
-  "short_name": "KeyLens",
+  "name": "KeyScope – Keyword Analysis Engine",
+  "short_name": "KeyScope",
   "description": "AI-powered SEO keyword extraction and management tool",
   "start_url": "/",
   "display": "standalone",

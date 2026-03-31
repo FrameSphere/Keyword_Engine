@@ -8,10 +8,10 @@ function Logo() {
     <Link to="/" className="flex items-center gap-2.5 group">
       <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white font-bold text-sm"
            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
-        KL
+        KS
       </div>
       <span className="font-bold text-lg text-white tracking-tight">
-        Key<span className="gradient-text">Lens</span>
+        Key<span className="gradient-text">Scope</span>
       </span>
     </Link>
   );
@@ -179,7 +179,7 @@ function Footer() {
           </div>
         </div>
         <div className="border-t border-white/[0.06] pt-6 flex items-center justify-between">
-          <p className="text-xs text-slate-600">© {new Date().getFullYear()} KeyLens. All rights reserved.</p>
+          <p className="text-xs text-slate-600">© {new Date().getFullYear()} KeyScope. All rights reserved.</p>
           <span className="badge-blue text-[10px]">v1.0</span>
         </div>
       </div>

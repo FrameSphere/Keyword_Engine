@@ -1,5 +1,5 @@
 // ============================================================
-// KeyLens – History + API Key Handler
+// KeyScope – History + API Key Handler
 // ============================================================
 
 import { json, err, generateToken, uuid } from './utils.js';
@@ -36,7 +36,6 @@ export async function handleHistory(request, env, user, path) {
 export async function handleApiKey(request, env, user, path) {
   const method = request.method;
 
-  // GET /apikey – aktuellen Key anzeigen
   if (path === '/apikey' && method === 'GET') {
     const u = await env.DB.prepare(
       `SELECT api_key FROM users WHERE id = ? LIMIT 1`
@@ -44,16 +43,14 @@ export async function handleApiKey(request, env, user, path) {
     return json({ api_key: u?.api_key || null });
   }
 
-  // POST /apikey – neuen Key generieren
   if (path === '/apikey' && method === 'POST') {
-    const newKey = 'kl_' + generateToken(32);
+    const newKey = 'ks_' + generateToken(32);
     await env.DB.prepare(
       `UPDATE users SET api_key = ? WHERE id = ?`
     ).bind(newKey, user.id).run();
     return json({ ok: true, api_key: newKey });
   }
 
-  // DELETE /apikey – Key widerrufen
   if (path === '/apikey' && method === 'DELETE') {
     await env.DB.prepare(
       `UPDATE users SET api_key = NULL WHERE id = ?`

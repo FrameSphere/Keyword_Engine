@@ -1,7 +1,7 @@
 {
-  "name": "keylens-frontend",
+  "name": "keyscope-frontend",
   "version": "1.0.0",
-  "description": "KeyLens – Keyword Analysis Engine",
+  "description": "KeyScope – Keyword Analysis Engine",
   "type": "module",
   "scripts": {
     "dev":     "vite",
