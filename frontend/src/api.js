@@ -110,4 +110,10 @@ export const api = {
     { id: 'legal-de',     name: 'Recht & Business DE',       language: 'de' },
     { id: 'legal-en',     name: 'Legal & Business EN',       language: 'en' },
   ]),
+
+  // Account
+  account: {
+    upgrade:   () => req('/account/upgrade',   { method: 'POST' }),
+    downgrade: () => req('/account/downgrade', { method: 'POST' }),
+  },
 };

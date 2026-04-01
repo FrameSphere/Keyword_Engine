@@ -10,6 +10,7 @@ import { handleWeights }   from './weights.js';
 import { handleIgnore }    from './ignore.js';
 import { handleHistory }   from './history.js';
 import { handleApiKey }    from './apikey.js';
+import { handleAccount }   from './account.js';
 import { cors, json, err } from './utils.js';
 
 export default {
@@ -58,6 +59,10 @@ export default {
 
       if (path.startsWith('/apikey')) {
         return cors(await handleApiKey(request, env, user, path), env);
+      }
+
+      if (path.startsWith('/account')) {
+        return cors(await handleAccount(request, env, user, path), env);
       }
 
       return cors(err('Not Found', 404), env);

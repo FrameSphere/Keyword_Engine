@@ -98,6 +98,15 @@ export default function Analyzer() {
   const [title,      setTitle]      = useState('');
   const [content,    setContent]    = useState('');
   const [lang,       setLang]       = useState('de');
+
+  // Profil zurücksetzen wenn Sprache wechselt und Profil nicht mehr passt
+  const handleLangChange = (newLang) => {
+    setLang(newLang);
+    const currentProfile = profiles.find(p => p.id === profileId);
+    if (currentProfile && currentProfile.language !== newLang) {
+      setProfileId('');
+    }
+  };
   const [profileId,  setProfileId]  = useState('');
   const [mode,       setMode]       = useState('algorithmic');
   const [kwCount,    setKwCount]    = useState(10);
@@ -172,7 +181,7 @@ export default function Analyzer() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <div>
               <label className="label">Language</label>
-              <select value={lang} onChange={e => setLang(e.target.value)} className="input">
+              <select value={lang} onChange={e => handleLangChange(e.target.value)} className="input">
                 <option value="de">🇩🇪 German</option>
                 <option value="en">🇬🇧 English</option>
                 <option value="fr">🇫🇷 French</option>
@@ -184,9 +193,13 @@ export default function Analyzer() {
               <label className="label">Profile</label>
               <select value={profileId} onChange={e => setProfileId(e.target.value)} className="input">
                 <option value="">No profile</option>
-                {profiles.map(p => (
-                  <option key={p.id} value={p.id}>{p.name}</option>
-                ))}
+                {profiles
+                  .filter(p => p.language === lang)
+                  .map(p => (
+                    <option key={p.id} value={p.id}>
+                      {p.is_system ? `\u2B21 ${p.name}` : p.name}
+                    </option>
+                  ))}
               </select>
             </div>
             <div>

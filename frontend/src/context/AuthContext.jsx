@@ -36,8 +36,16 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  // Plan im State aktualisieren (nach Upgrade/Downgrade)
+  const refreshUser = async () => {
+    try {
+      const d = await api.auth.me();
+      setUser(d.user);
+    } catch {}
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );
