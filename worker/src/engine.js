@@ -77,7 +77,11 @@ export function analyzeCorpus(documents, config = {}) {
     scores[word] = idf * avgTf * lenBonus;
   }
 
-  const sorted   = Object.entries(scores).sort((a, b) => b[1] - a[1]).slice(0, cfg.topN || 5000);
+  // Für Corpus-Training: ALLE Wörter sortiert (kein topN-Limit).
+  // Für Text-Analyse wird topN separat in analyzeText angewendet.
+  const corpusTopN = cfg.corpusTopN || 0; // 0 = kein Limit
+  const allSorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+  const sorted = corpusTopN > 0 ? allSorted.slice(0, corpusTopN) : allSorted;
   const maxScore = sorted[0]?.[1] || 1;
 
   const weights = {};

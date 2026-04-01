@@ -85,17 +85,45 @@ export async function handleWeights(request, env, user, path) {
   const getMatch = path.match(/^\/weights\/([^/]+)$/);
   if (getMatch && method === 'GET') {
     const profileId = getMatch[1];
+
+    // System-Profile sind öffentlich; User-Profile nur für den Besitzer
     const profile = await env.DB.prepare(
-      `SELECT id FROM profiles WHERE id = ? AND user_id = ? LIMIT 1`
+      `SELECT id, user_id FROM profiles WHERE id = ? AND (user_id = ? OR user_id = '__system__') LIMIT 1`
     ).bind(profileId, user.id).first();
     if (!profile) return err('Profil nicht gefunden', 404);
 
-    const rows = await env.DB.prepare(
-      `SELECT word, score, doc_freq, corpus_freq
-       FROM word_weights WHERE profile_id = ? ORDER BY score DESC LIMIT 500`
-    ).bind(profileId).all();
+    const url    = new URL(request.url);
+    const limit  = Math.min(parseInt(url.searchParams.get('limit')  || '500', 10), 2000);
+    const offset = parseInt(url.searchParams.get('offset') || '0', 10);
+    const search = (url.searchParams.get('q') || '').trim().toLowerCase();
 
-    return json({ profile_id: profileId, words: rows.results || [] });
+    let query, params;
+    if (search) {
+      query  = `SELECT word, score, doc_freq, corpus_freq
+                FROM word_weights WHERE profile_id = ? AND word LIKE ?
+                ORDER BY score DESC LIMIT ? OFFSET ?`;
+      params = [profileId, `%${search}%`, limit, offset];
+    } else {
+      query  = `SELECT word, score, doc_freq, corpus_freq
+                FROM word_weights WHERE profile_id = ?
+                ORDER BY score DESC LIMIT ? OFFSET ?`;
+      params = [profileId, limit, offset];
+    }
+
+    const [rows, countRow] = await Promise.all([
+      env.DB.prepare(query).bind(...params).all(),
+      env.DB.prepare(
+        `SELECT COUNT(*) as total FROM word_weights WHERE profile_id = ?`
+      ).bind(profileId).first(),
+    ]);
+
+    return json({
+      profile_id: profileId,
+      total:      countRow?.total ?? 0,
+      limit,
+      offset,
+      words:      rows.results || [],
+    });
   }
 
   // ── DELETE /weights/:profileId ────────────────────────────

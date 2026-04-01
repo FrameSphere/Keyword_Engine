@@ -13,16 +13,28 @@ export async function handleProfiles(request, env, user, path) {
   const idMatch = path.match(/^\/profiles\/([^/]+)$/);
   const profileId = idMatch?.[1];
 
-  // ── GET /profiles ─────────────────────────────────────────
+  // GET /profiles
   if (path === '/profiles' && method === 'GET') {
-    const rows = await env.DB.prepare(
-      `SELECT id, name, description, language, template_id, created_at, updated_at
+    // Eigene Profile des Users
+    const userRows = await env.DB.prepare(
+      `SELECT id, name, description, language, template_id, created_at, updated_at, 0 as is_system
        FROM profiles WHERE user_id = ? ORDER BY created_at DESC`
     ).bind(user.id).all();
-    return json({ profiles: rows.results || [] });
+
+    // Vortranierte System-Profile (user_id = '__system__')
+    const sysRows = await env.DB.prepare(
+      `SELECT id, name, description, language, template_id, created_at, updated_at, 1 as is_system
+       FROM profiles WHERE user_id = '__system__' ORDER BY name ASC`
+    ).all();
+
+    const profiles = [
+      ...(userRows.results || []),
+      ...(sysRows.results || []),
+    ];
+    return json({ profiles });
   }
 
-  // ── POST /profiles ────────────────────────────────────────
+  // POST /profiles
   if (path === '/profiles' && method === 'POST') {
     const { name, description = '', language = 'de', template_id = null } = await request.json().catch(() => ({}));
     if (!name) return err('Name erforderlich');
@@ -36,7 +48,6 @@ export async function handleProfiles(request, env, user, path) {
     const id = uuid();
     let config = '{}';
 
-    // Template-Konfiguration laden
     if (template_id) {
       const { TEMPLATES } = await import('./templates.js');
       const tmpl = TEMPLATES[template_id];
@@ -48,7 +59,6 @@ export async function handleProfiles(request, env, user, path) {
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `).bind(id, user.id, name, description, language, template_id, config).run();
 
-    // Wenn Template: Ignore-Words aus Template übernehmen
     if (template_id) {
       const { TEMPLATES } = await import('./templates.js');
       const tmpl = TEMPLATES[template_id];
@@ -66,7 +76,7 @@ export async function handleProfiles(request, env, user, path) {
     return json({ ok: true, profile: { id, name, description, language, template_id } }, 201);
   }
 
-  // ── PUT /profiles/:id ─────────────────────────────────────
+  // PUT /profiles/:id
   if (profileId && method === 'PUT') {
     const existing = await env.DB.prepare(
       `SELECT id FROM profiles WHERE id = ? AND user_id = ? LIMIT 1`
@@ -91,7 +101,7 @@ export async function handleProfiles(request, env, user, path) {
     return json({ ok: true });
   }
 
-  // ── DELETE /profiles/:id ──────────────────────────────────
+  // DELETE /profiles/:id
   if (profileId && method === 'DELETE') {
     const existing = await env.DB.prepare(
       `SELECT id FROM profiles WHERE id = ? AND user_id = ? LIMIT 1`

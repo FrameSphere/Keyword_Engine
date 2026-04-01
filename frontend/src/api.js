@@ -51,7 +51,8 @@ export const api = {
   weights: {
     train:  (profile_id, documents, lang) =>
       req('/weights/train', { method: 'POST', body: JSON.stringify({ profile_id, documents, lang }) }),
-    get:    (profileId)  => req(`/weights/${profileId}`),
+    get:    (profileId, { limit = 500, offset = 0, q = '' } = {}) =>
+      req(`/weights/${profileId}?limit=${limit}&offset=${offset}${q ? `&q=${encodeURIComponent(q)}` : ''}`),
     delete: (profileId)  => req(`/weights/${profileId}`, { method: 'DELETE' }),
   },
 
