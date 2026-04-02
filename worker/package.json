@@ -10,6 +10,6 @@
     "db:init": "wrangler d1 execute keyscope-db --file=../schema.sql"
   },
   "devDependencies": {
-    "wrangler": "^3.0.0"
+    "wrangler": "^4.80.0"
   }
 }
