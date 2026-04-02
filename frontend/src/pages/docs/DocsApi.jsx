@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const BASE_URL = 'https://keylens-worker.YOUR-SUBDOMAIN.workers.dev';
+const BASE_URL = 'https://keyscope-worker.karol-paschek.workers.dev';
 
 function CodeBlock({ code, lang = 'bash' }) {
   const [copied, setCopied] = useState(false);
@@ -177,7 +177,7 @@ export default function DocsApi() {
       <Endpoint method="POST" path="/weights/train" desc="Train a profile by running TF-IDF on a corpus of your documents. Replaces any existing weights.">
         <ParamTable rows={[
           { name: 'profile_id', type: 'string', req: true,  desc: 'UUID of the profile to train' },
-          { name: 'documents',  type: 'array',  req: true,  desc: 'Array of { title?, content, lang? } objects (max 200)' },
+          { name: 'documents',  type: 'array',  req: true,  desc: 'Array of { title?, content, lang? } objects (max 20 Free / max 200 Pro)' },
           { name: 'lang',       type: 'string', req: false, desc: 'Fallback language if not set per-document' },
         ]} />
         <CodeBlock lang="bash" code={`curl -X POST ${BASE_URL}/weights/train \\

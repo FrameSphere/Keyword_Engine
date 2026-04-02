@@ -19,27 +19,27 @@ const PLANS = [
       { ok: true,  text: '5 languages (DE, EN, FR, ES, IT)' },
       { ok: true,  text: 'Pre-built templates' },
       { ok: true,  text: 'REST API access' },
-      { ok: false, text: 'Profile training (TF-IDF)' },
+      { ok: true,  text: 'Profile training (up to 20 docs)' },
       { ok: false, text: 'AI model mode' },
-      { ok: false, text: 'Unlimited history' },
+      { ok: false, text: 'Full analysis history' },
       { ok: false, text: 'Priority support' },
     ],
   },
   {
     id: 'pro',
     name: 'Pro',
-    price: { monthly: 9.99, yearly: 7.99 },
+    price: { monthly: 9, yearly: 7.49 },
     badge: 'Most Popular',
     desc: 'For SEO professionals and growing content teams.',
     color: 'border-blue-500/40',
     btnClass: 'btn-primary',
-    btnLabel: 'Start Pro — 7 days free',
+    btnLabel: 'Start Pro',
     btnTo: '/register?plan=pro',
     glow: true,
     features: [
       { ok: true,  text: '500 analyses per day' },
       { ok: true,  text: 'Up to 50 keywords + 50 longtail' },
-      { ok: true,  text: 'Unlimited profiles' },
+      { ok: true,  text: '50 profiles' },
       { ok: true,  text: '5 languages (DE, EN, FR, ES, IT)' },
       { ok: true,  text: 'Pre-built templates' },
       { ok: true,  text: 'REST API access' },
@@ -69,8 +69,8 @@ const FAQ = [
     a: 'Yes. Plan changes take effect immediately. If you downgrade, your data is preserved but access to Pro features is suspended.',
   },
   {
-    q: 'Is there a free trial for Pro?',
-    a: 'Yes — Pro includes a 7-day free trial. No credit card required to start.',
+    q: 'Gibt es eine Testphase für Pro?',
+    a: 'Aktuell ist kein automatischer Trial verfügbar. Du kannst jederzeit upgraden und downgraden — das Downgrade ist sofort wirksam und deine Daten bleiben erhalten.',
   },
   {
     q: 'Do unused analyses roll over?',
@@ -124,14 +124,14 @@ export default function Pricing() {
               <p className="text-slate-400 text-sm font-medium mb-1">{plan.name}</p>
               <div className="flex items-end gap-2 mb-2">
                 <span className="text-4xl font-bold text-white">
-                  {plan.price.monthly === 0 ? 'Free' : `$${(yearly ? plan.price.yearly : plan.price.monthly).toFixed(2)}`}
+                  {plan.price.monthly === 0 ? 'Free' : `€${(yearly ? plan.price.yearly : plan.price.monthly).toFixed(2).replace('.00', '')}`}
                 </span>
                 {plan.price.monthly > 0 && (
-                  <span className="text-slate-500 text-sm mb-1.5">/ month</span>
+                  <span className="text-slate-500 text-sm mb-1.5">/ Monat</span>
                 )}
               </div>
               {plan.price.monthly > 0 && yearly && (
-                <p className="text-xs text-emerald-400">Billed ${ (plan.price.yearly * 12).toFixed(2) }/year</p>
+                <p className="text-xs text-emerald-400">Abgerechnet €{(plan.price.yearly * 12).toFixed(2)}/Jahr</p>
               )}
               <p className="text-slate-500 text-sm mt-2">{plan.desc}</p>
             </div>
@@ -170,17 +170,17 @@ export default function Pricing() {
             </thead>
             <tbody>
               {[
-                ['Daily analyses',         '20',         '500'],
-                ['Keywords per result',    'up to 10',   'up to 50'],
-                ['Longtail phrases',       'up to 10',   'up to 50'],
-                ['Profiles',              '3',           'Unlimited'],
-                ['Languages',             '5',           '5'],
-                ['REST API',              '✓',           '✓'],
-                ['Templates',             '✓',           '✓'],
-                ['Profile Training',      '—',           '✓'],
-                ['AI Model mode',         '—',           '✓'],
-                ['Analysis history',      '7 days',      'Unlimited'],
-                ['Support',               'Community',   'Priority'],
+                ['Daily analyses',         '20',          '500'],
+                ['Keywords per result',    'up to 10',    'up to 50'],
+                ['Longtail phrases',       'up to 10',    'up to 50'],
+                ['Profiles',              '3',            '50'],
+                ['Languages',             '5',            '5'],
+                ['REST API',              '✓',            '✓'],
+                ['Templates',             '✓',            '✓'],
+                ['Profile Training',      'bis 20 Docs',  'bis 200 Docs'],
+                ['AI Model mode',         '—',            '✓'],
+                ['Analysis history',      'begrenzt',     'vollständig'],
+                ['Support',               'Community',    'Priority'],
               ].map(([feat, free, pro], i) => (
                 <tr key={i} className={`border-b border-white/[0.04] last:border-0 ${i % 2 === 0 ? '' : 'bg-white/[0.015]'}`}>
                   <td className="px-6 py-3.5 text-slate-400">{feat}</td>

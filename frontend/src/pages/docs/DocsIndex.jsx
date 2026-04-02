@@ -12,7 +12,7 @@ export default function DocsIndex() {
     <div>
       <div className="mb-10">
         <span className="badge-blue mb-3 inline-block">Documentation</span>
-        <h1 className="text-4xl font-bold text-white mb-4">KeyLens Docs</h1>
+        <h1 className="text-4xl font-bold text-white mb-4">KeyScope Docs</h1>
         <p className="text-slate-400 text-lg leading-relaxed max-w-2xl">
           Everything you need to extract, manage, and automate SEO keywords — from quick UI use to full API integration.
         </p>

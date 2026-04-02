@@ -49,9 +49,9 @@ export default function DocsQuickstart() {
 
         <Step n={1} title="Create a free account">
           <p className="text-slate-400 text-sm leading-relaxed">
-            Head to <Link to="/register" className="text-blue-400 hover:underline">keylens.io/register</Link> and
+            Head to <Link to="/register" className="text-blue-400 hover:underline">keyscope.pages.dev/register</Link> and
             sign up with your email. No credit card required for the Free plan.
-            After registration you'll land directly in the Dashboard with a default profile already created.
+            After registration you'll land directly in the Dashboard.
           </p>
         </Step>
 
@@ -105,7 +105,7 @@ export default function DocsQuickstart() {
 
         <Step n={2} title="Make your first request">
           <p className="text-slate-400 text-sm leading-relaxed mb-1">Send a <code className="font-mono text-blue-300">POST</code> to the analyze endpoint:</p>
-          <CodeBlock lang="bash" code={`curl -X POST https://keylens-worker.YOUR-SUBDOMAIN.workers.dev/analyze \\
+          <CodeBlock lang="bash" code={`curl -X POST https://keyscope-worker.karol-paschek.workers.dev/analyze \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{

@@ -52,7 +52,7 @@ function Hero() {
             <div className="w-3 h-3 rounded-full bg-red-500/70" />
             <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
             <div className="w-3 h-3 rounded-full bg-green-500/70" />
-            <span className="text-xs text-slate-600 ml-2 font-mono">keylens • analyze</span>
+            <span className="text-xs text-slate-600 ml-2 font-mono">keyscope • analyze</span>
           </div>
           <p className="text-xs text-slate-500 font-mono mb-3">Input text →</p>
           <p className="text-sm text-slate-400 italic mb-5 leading-relaxed border-l-2 border-blue-500/30 pl-3">
@@ -188,8 +188,8 @@ function HowItWorks() {
 
 // ── API Preview ───────────────────────────────────────────────
 function ApiPreview() {
-  const code = `curl -X POST https://api.keylens.io/analyze \\
-  -H "Authorization: Bearer kl_your_api_key" \\
+  const code = `curl -X POST https://keyscope-worker.karol-paschek.workers.dev/analyze \\
+  -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
     "title": "Best SEO Practices 2025",
@@ -282,11 +282,11 @@ function PricingPreview() {
             <p className="text-3xl font-extrabold text-white mb-1">€9<span className="text-sm font-normal text-slate-500">/mo</span></p>
             <p className="text-sm text-slate-500 mb-6">Everything in Free, plus</p>
             <ul className="space-y-2.5 text-sm text-slate-400 mb-8">
-              {['500 analyses / day','50 profiles','AI-powered mode (HF)','Priority API access','Custom model fine-tuning'].map(f => (
+              {['500 analyses / day','50 profiles','AI-powered mode (HF)','200 Training-Dokumente','Priority support'].map(f => (
                 <li key={f} className="flex items-center gap-2"><span className="text-fuchsia-400">✓</span>{f}</li>
               ))}
             </ul>
-            <Link to="/register" className="btn-primary w-full justify-center shadow-glow-violet">Start Pro trial</Link>
+            <Link to="/register" className="btn-primary w-full justify-center shadow-glow-violet">Start Pro</Link>
           </div>
         </div>
 

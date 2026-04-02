@@ -35,9 +35,9 @@ export default function DocsAlgorithm() {
     <div className="space-y-2">
       <div className="mb-8">
         <span className="badge-blue mb-3 inline-block">Algorithm</span>
-        <h1 className="text-3xl font-bold text-white mb-3">How KeyLens works</h1>
+        <h1 className="text-3xl font-bold text-white mb-3">How KeyScope works</h1>
         <p className="text-slate-400 leading-relaxed">
-          KeyLens combines <strong className="text-white">TF-IDF scoring</strong> with
+          KeyScope combines <strong className="text-white">TF-IDF scoring</strong> with
           {' '}<strong className="text-white">profile-based word weights</strong>, positional bonuses, and
           weighted n-gram extraction to deliver relevant, niche-aware keywords from any text.
         </p>
