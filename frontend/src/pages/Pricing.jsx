@@ -1,5 +1,7 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useAuth } from '../context/AuthContext.jsx';
+import { api } from '../api.js';
 
 const PLANS = [
   {
@@ -81,6 +83,29 @@ const FAQ = [
 export default function Pricing() {
   const [yearly, setYearly] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  // Pro-Button: eingeloggt → Stripe Checkout, sonst → Register
+  const handleProClick = async () => {
+    if (!user) {
+      navigate('/register?plan=pro');
+      return;
+    }
+    if (user.plan === 'pro') {
+      navigate('/app/settings');
+      return;
+    }
+    setCheckoutLoading(true);
+    try {
+      const { url } = await api.stripe.checkout();
+      window.location.href = url;
+    } catch (e) {
+      alert(e.message);
+      setCheckoutLoading(false);
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-20">
@@ -136,10 +161,22 @@ export default function Pricing() {
               <p className="text-slate-500 text-sm mt-2">{plan.desc}</p>
             </div>
 
-            <Link to={plan.btnTo}
-              className={`${plan.btnClass} text-center mb-6 py-2.5`}>
-              {plan.btnLabel}
-            </Link>
+            {plan.id === 'pro' ? (
+              <button
+                onClick={handleProClick}
+                disabled={checkoutLoading}
+                className={`${plan.btnClass} text-center mb-6 py-2.5 w-full disabled:opacity-60`}>
+                {checkoutLoading
+                  ? <span className="inline-flex items-center gap-2 justify-center"><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"/>Weiterleitung…</span>
+                  : user?.plan === 'pro' ? 'Bereits Pro ✓' : plan.btnLabel}
+              </button>
+            ) : (
+              <Link
+                to={user ? '/app' : plan.btnTo}
+                className={`${plan.btnClass} text-center mb-6 py-2.5`}>
+                {user ? 'Zum Dashboard' : plan.btnLabel}
+              </Link>
+            )}
 
             <ul className="space-y-3 flex-1">
               {plan.features.map((f, i) => (

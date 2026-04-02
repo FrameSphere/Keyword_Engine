@@ -191,7 +191,7 @@ export async function handleStripe(request, env, path, user) {
       'line_items[0][quantity]': '1',
       'subscription_data[metadata][user_id]': user.id,
       'metadata[user_id]': user.id,
-      success_url: `${FRONTEND}/settings?upgraded=1`,
+      success_url: `${FRONTEND}/app/settings?upgraded=1`,
       cancel_url:  `${FRONTEND}/pricing`,
       allow_promotion_codes: 'true',
     }, KEY);
