@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { api } from '../api.js';
 import { useAuth } from '../context/AuthContext.jsx';
+import ProSuccessModal from '../components/ProSuccessModal.jsx';
 
 // ── Upgrade Modal → leitet zu Stripe Checkout weiter ──────────
 function UpgradeModal({ onClose }) {
@@ -131,17 +132,15 @@ export default function Settings() {
   const [loading,    setLoading]    = useState(true);
   const [genLoading, setGenLoading] = useState(false);
   const [copied,     setCopied]     = useState(false);
-  const [showUpgrade, setShowUpgrade] = useState(false);
-  const [planMsg,    setPlanMsg]    = useState('');
+  const [showUpgrade,     setShowUpgrade]     = useState(false);
+  const [showProSuccess,  setShowProSuccess]  = useState(false);
+  const [planMsg,         setPlanMsg]         = useState('');
 
-  // ?upgraded=1 nach Stripe-Redirect → Plan refreshen & Meldung zeigen
+  // ?upgraded=1 nach Stripe-Redirect → Plan refreshen & Erfolgs-Modal zeigen
   useEffect(() => {
     if (searchParams.get('upgraded') === '1') {
       setSearchParams({}, { replace: true });
-      refreshUser().then(() => {
-        setPlanMsg('✓ Pro aktiviert! Alle Features sind jetzt freigeschaltet.');
-        setTimeout(() => setPlanMsg(''), 6000);
-      });
+      refreshUser().then(() => setShowProSuccess(true));
     }
   }, []);
 
@@ -310,6 +309,11 @@ export default function Settings() {
       {/* Upgrade Modal */}
       {showUpgrade && (
         <UpgradeModal onClose={() => setShowUpgrade(false)} />
+      )}
+
+      {/* Pro-Success Modal nach Stripe-Redirect */}
+      {showProSuccess && (
+        <ProSuccessModal onClose={() => setShowProSuccess(false)} />
       )}
     </div>
   );
