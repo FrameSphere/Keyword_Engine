@@ -77,6 +77,21 @@ export default function Dashboard() {
             </svg>
           </div>
         </Link>
+
+        <Link to="/docs" className="card hover:border-white/[0.15] transition-all group block">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-xl text-emerald-400 group-hover:bg-emerald-500/20 transition-all">
+              📚
+            </div>
+            <div>
+              <p className="font-semibold text-white">Documentation</p>
+              <p className="text-xs text-slate-500">API-Referenz, Quickstart & Algorithmus</p>
+            </div>
+            <svg className="w-4 h-4 text-slate-600 ml-auto group-hover:text-emerald-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
+            </svg>
+          </div>
+        </Link>
       </div>
 
       {/* Recent analyses */}

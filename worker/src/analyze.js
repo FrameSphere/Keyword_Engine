@@ -47,9 +47,10 @@ export async function handleAnalyze(request, env, user) {
   let ignoreList = [];
 
   if (profile_id) {
-    // Prüfen ob Profil dem User gehört
+    // User-eigene Profile ODER System-Profile ('__system__') erlaubt
     const profile = await env.DB.prepare(
-      `SELECT id, language FROM profiles WHERE id = ? AND user_id = ? LIMIT 1`
+      `SELECT id, language FROM profiles
+       WHERE id = ? AND (user_id = ? OR user_id = '__system__') LIMIT 1`
     ).bind(profile_id, user.id).first();
 
     if (!profile) return err('Profil nicht gefunden', 404);
@@ -62,7 +63,7 @@ export async function handleAnalyze(request, env, user) {
       weights[row.word] = row.score;
     }
 
-    // Ignore-Liste laden (profil-spezifisch + globale)
+    // Ignore-Liste laden (nur für eigene Profile; System-Profile haben keine User-Ignores)
     const ignoreRows = await env.DB.prepare(`
       SELECT word FROM ignore_words
       WHERE user_id = ? AND (profile_id = ? OR profile_id IS NULL)
