@@ -113,7 +113,12 @@ export const api = {
 
   // Account
   account: {
-    upgrade:   () => req('/account/upgrade',   { method: 'POST' }),
     downgrade: () => req('/account/downgrade', { method: 'POST' }),
+  },
+
+  // Stripe
+  stripe: {
+    checkout: () => req('/stripe/checkout', { method: 'POST' }),
+    portal:   () => req('/stripe/portal',   { method: 'POST' }),
   },
 };

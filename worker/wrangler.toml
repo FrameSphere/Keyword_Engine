@@ -11,6 +11,12 @@ database_id = "a8e5bc81-59ff-4cea-8a8a-d0be6d4737eb"
 ENVIRONMENT = "production"
 FRONTEND_URL = "https://keyscope.pages.dev"
 HF_SPACES_URL = "https://REPLACE-WITH-YOUR-HF-SPACE.hf.space"
+# Stripe Price ID (kein Secret – darf hier stehen)
+STRIPE_PRICE_ID = "price_1THsunEC9c8leIGWHkmXcPWh"
+
+# Secrets (per wrangler secret put):
+# STRIPE_SECRET_KEY      – sk_live_... oder sk_test_...
+# STRIPE_WEBHOOK_SECRET  – whsec_...
 
 [dev]
 port = 8787

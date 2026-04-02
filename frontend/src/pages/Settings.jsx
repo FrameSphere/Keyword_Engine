@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { api } from '../api.js';
 import { useAuth } from '../context/AuthContext.jsx';
 
-// ── Upgrade Modal ─────────────────────────────────────────────
-function UpgradeModal({ onClose, onSuccess }) {
+// ── Upgrade Modal → leitet zu Stripe Checkout weiter ──────────
+function UpgradeModal({ onClose }) {
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState('');
 
@@ -11,21 +12,20 @@ function UpgradeModal({ onClose, onSuccess }) {
     setLoading(true);
     setError('');
     try {
-      await api.account.upgrade();
-      onSuccess();
+      const { url } = await api.stripe.checkout();
+      window.location.href = url; // Weiterleitung zu Stripe
     } catch (e) {
       setError(e.message);
-    } finally {
       setLoading(false);
     }
   };
 
   const PRO_FEATURES = [
-    { icon: '⬡', label: '500 Analysen / Tag', sub: 'statt 20' },
-    { icon: '◈', label: '50 Profile', sub: 'statt 3' },
-    { icon: '📄', label: '200 Training-Dokumente', sub: 'statt 20' },
-    { icon: '✦', label: 'AI-Modus', sub: 'HuggingFace-Modelle' },
-    { icon: '⚡', label: 'Priorität-Support', sub: 'schnellere Antworten' },
+    { icon: '⬡', label: '500 Analysen / Tag',      sub: 'statt 20' },
+    { icon: '◈', label: '50 Profile',               sub: 'statt 3' },
+    { icon: '📄', label: '200 Training-Dokumente',  sub: 'statt 20' },
+    { icon: '✦', label: 'AI-Modus',                 sub: 'HuggingFace-Modelle' },
+    { icon: '⚡', label: 'Priorität-Support',        sub: 'schnellere Antworten' },
   ];
 
   return (
@@ -72,11 +72,6 @@ function UpgradeModal({ onClose, onSuccess }) {
           <div className="mb-4 px-3 py-2 rounded-lg bg-red-500/10 text-sm text-red-400">{error}</div>
         )}
 
-        {/* Note: Demo-Upgrade */}
-        <div className="mb-4 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-400">
-          ⚠ Demo-Modus: Dieses Upgrade ist kostenlos und aktiviert Pro direkt. Payment-Integration (Stripe) folgt.
-        </div>
-
         <div className="flex gap-3">
           <button onClick={onClose} className="btn-secondary flex-1 justify-center" disabled={loading}>
             Abbrechen
@@ -87,8 +82,8 @@ function UpgradeModal({ onClose, onSuccess }) {
             hover:from-fuchsia-500 hover:to-violet-500 transition-all shadow-lg
             disabled:opacity-50 disabled:cursor-not-allowed">
             {loading
-              ? <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"/>Upgrading…</>
-              : '✦ Jetzt upgraden'}
+              ? <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"/>Weiterleitung…</>
+              : '✦ Jetzt upgraden → Stripe'}
           </button>
         </div>
       </div>
@@ -96,41 +91,33 @@ function UpgradeModal({ onClose, onSuccess }) {
   );
 }
 
-// ── Downgrade Confirm ─────────────────────────────────────────
-function DowngradeModal({ onClose, onSuccess }) {
+// ── Billing-Portal-Button (für Pro-User: Abo verwalten/kündigen) ──
+function ManageBillingButton() {
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState('');
 
-  const handleDowngrade = async () => {
+  const handlePortal = async () => {
     setLoading(true);
     setError('');
     try {
-      await api.account.downgrade();
-      onSuccess();
+      const { url } = await api.stripe.portal();
+      window.location.href = url;
     } catch (e) {
       setError(e.message);
-    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/70 backdrop-blur-sm">
-      <div className="card w-full max-w-sm animate-slide-up">
-        <h2 className="font-bold text-white mb-2">Auf Free downgraden?</h2>
-        <p className="text-sm text-slate-400 mb-5">
-          Du verlierst den Zugang zu AI-Modus, mehr als 3 Profile und erhöhte Limits.
-        </p>
-        {error && (
-          <div className="mb-4 px-3 py-2 rounded-lg bg-red-500/10 text-sm text-red-400">{error}</div>
-        )}
-        <div className="flex gap-3">
-          <button onClick={onClose} className="btn-secondary flex-1 justify-center" disabled={loading}>Abbrechen</button>
-          <button onClick={handleDowngrade} disabled={loading} className="btn-danger flex-1 justify-center">
-            {loading ? 'Downgrading…' : 'Downgraden'}
-          </button>
-        </div>
-      </div>
+    <div className="flex flex-col items-end gap-1">
+      <button
+        onClick={handlePortal}
+        disabled={loading}
+        className="text-xs px-3 py-1.5 rounded-lg font-medium btn-secondary disabled:opacity-50"
+      >
+        {loading ? 'Weiterleitung…' : '⚙️ Abo verwalten'}
+      </button>
+      {error && <p className="text-xs text-red-400">{error}</p>}
     </div>
   );
 }
@@ -138,13 +125,25 @@ function DowngradeModal({ onClose, onSuccess }) {
 // ── Main Settings Page ────────────────────────────────────────
 export default function Settings() {
   const { user, refreshUser } = useAuth();
-  const [apiKey,      setApiKey]      = useState(null);
-  const [loading,     setLoading]     = useState(true);
-  const [genLoading,  setGenLoading]  = useState(false);
-  const [copied,      setCopied]      = useState(false);
-  const [showUpgrade,   setShowUpgrade]   = useState(false);
-  const [showDowngrade, setShowDowngrade] = useState(false);
-  const [planMsg,     setPlanMsg]     = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [apiKey,     setApiKey]     = useState(null);
+  const [loading,    setLoading]    = useState(true);
+  const [genLoading, setGenLoading] = useState(false);
+  const [copied,     setCopied]     = useState(false);
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const [planMsg,    setPlanMsg]    = useState('');
+
+  // ?upgraded=1 nach Stripe-Redirect → Plan refreshen & Meldung zeigen
+  useEffect(() => {
+    if (searchParams.get('upgraded') === '1') {
+      setSearchParams({}, { replace: true });
+      refreshUser().then(() => {
+        setPlanMsg('✓ Pro aktiviert! Alle Features sind jetzt freigeschaltet.');
+        setTimeout(() => setPlanMsg(''), 6000);
+      });
+    }
+  }, []);
 
   useEffect(() => {
     api.apikey.get().then(d => setApiKey(d.api_key)).finally(() => setLoading(false));
@@ -171,20 +170,6 @@ export default function Settings() {
     navigator.clipboard.writeText(apiKey);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
-
-  const onUpgradeSuccess = async () => {
-    await refreshUser();
-    setShowUpgrade(false);
-    setPlanMsg('✓ Pro aktiviert! Alle Features sind jetzt freigeschaltet.');
-    setTimeout(() => setPlanMsg(''), 5000);
-  };
-
-  const onDowngradeSuccess = async () => {
-    await refreshUser();
-    setShowDowngrade(false);
-    setPlanMsg('Plan auf Free zurückgesetzt.');
-    setTimeout(() => setPlanMsg(''), 5000);
   };
 
   const isPro = user?.plan === 'pro';
@@ -227,20 +212,13 @@ export default function Settings() {
                   ✦ Upgrade auf Pro
                 </button>
               )}
-              {isPro && (
-                <button
-                  onClick={() => setShowDowngrade(true)}
-                  className="text-xs text-slate-600 hover:text-slate-400 transition-colors"
-                >
-                  Downgraden
-                </button>
-              )}
+              {isPro && <ManageBillingButton />}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Pro Feature Overview */}
+      {/* Pro Feature Overview (nur für Free-User) */}
       {!isPro && (
         <div className="card mb-5 border-fuchsia-500/20 bg-fuchsia-500/[0.03]">
           <div className="flex items-center justify-between mb-3">
@@ -313,7 +291,7 @@ export default function Settings() {
         <div className="space-y-2 text-sm">
           {[
             ['Analysen / Tag',       isPro ? '500' : '20'],
-            ['Max. Profile',         isPro ? '50' : '3'],
+            ['Max. Profile',         isPro ? '50'  : '3'],
             ['Training-Dokumente',   isPro ? '200' : '20'],
             ['AI-Modus',             isPro ? '✓ Aktiv' : '✗ Pro only'],
           ].map(([label, value]) => (
@@ -329,12 +307,9 @@ export default function Settings() {
         </div>
       </div>
 
-      {/* Modals */}
+      {/* Upgrade Modal */}
       {showUpgrade && (
-        <UpgradeModal onClose={() => setShowUpgrade(false)} onSuccess={onUpgradeSuccess} />
-      )}
-      {showDowngrade && (
-        <DowngradeModal onClose={() => setShowDowngrade(false)} onSuccess={onDowngradeSuccess} />
+        <UpgradeModal onClose={() => setShowUpgrade(false)} />
       )}
     </div>
   );

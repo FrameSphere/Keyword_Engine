@@ -10,9 +10,11 @@ CREATE TABLE IF NOT EXISTS users (
   email       TEXT UNIQUE NOT NULL,
   password    TEXT NOT NULL,              -- bcrypt hash
   plan        TEXT NOT NULL DEFAULT 'free', -- 'free' | 'pro'
-  api_key     TEXT UNIQUE,               -- Bearer token for API access
-  created_at  TEXT NOT NULL DEFAULT (datetime('now')),
-  updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
+  api_key                TEXT UNIQUE,               -- Bearer token for API access
+  stripe_customer_id     TEXT UNIQUE,               -- Stripe Customer ID
+  stripe_subscription_id TEXT UNIQUE,               -- Stripe Subscription ID
+  created_at             TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at             TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
 -- ── Sessions ───────────────────────────────────────────────

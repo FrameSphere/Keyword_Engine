@@ -11,6 +11,7 @@ import { handleIgnore }    from './ignore.js';
 import { handleHistory }   from './history.js';
 import { handleApiKey }    from './apikey.js';
 import { handleAccount }   from './account.js';
+import { handleStripe }    from './stripe.js';
 import { cors, json, err } from './utils.js';
 
 export default {
@@ -30,6 +31,11 @@ export default {
 
       if (path.startsWith('/auth/')) {
         return cors(await handleAuth(request, env, path), env);
+      }
+
+      // Stripe-Webhook ist öffentlich (Signatur-Verifikation intern)
+      if (path === '/stripe/webhook') {
+        return cors(await handleStripe(request, env, path, null), env);
       }
 
       const user = await getUser(request, env);
@@ -65,6 +71,10 @@ export default {
         return cors(await handleAccount(request, env, user, path), env);
       }
 
+      if (path.startsWith('/stripe')) {
+        return cors(await handleStripe(request, env, path, user), env);
+      }
+
       return cors(err('Not Found', 404), env);
 
     } catch (e) {
@@ -90,7 +100,7 @@ async function getUser(request, env) {
   if (!token) return null;
 
   const session = await env.DB.prepare(
-    `SELECT s.user_id, u.email, u.plan, u.id
+    `SELECT s.user_id, u.email, u.plan, u.id, u.stripe_customer_id
      FROM sessions s
      JOIN users u ON u.id = s.user_id
      WHERE s.token = ? AND s.expires_at > datetime('now')
