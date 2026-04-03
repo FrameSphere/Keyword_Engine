@@ -94,6 +94,11 @@ export default function DocsApi() {
         <strong className="text-white">Authentication: </strong>
         All endpoints except <code className="font-mono text-blue-300">/auth/*</code> require:
         <CodeBlock lang="http" code={`Authorization: Bearer YOUR_API_KEY`} />
+        <p className="text-xs text-slate-500 mt-2">
+          💡 <strong className="text-slate-400">Shell tip:</strong> If your content contains single quotes, use a JSON file with{' '}
+          <code className="font-mono text-blue-300">-d @payload.json</code> instead of inline{' '}
+          <code className="font-mono text-blue-300">-d '{"..."}'</code> to avoid quoting issues.
+        </p>
       </div>
 
       {/* ── Auth ── */}
