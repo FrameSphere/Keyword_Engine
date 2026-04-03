@@ -132,7 +132,7 @@ function ProfileDetailModal({ profile, onClose, onTrain, onDelete }) {
         </div>
 
         {/* Stats row */}
-        <div className="grid grid-cols-3 gap-3 mb-4 flex-shrink-0">
+        <div className="grid grid-cols-3 gap-3 mb-3 flex-shrink-0">
           <div className="card bg-white/[0.02] text-center py-3">
             <p className="text-xl font-bold text-white">{total.toLocaleString()}</p>
             <p className="text-[11px] text-slate-500 mt-0.5">Word Weights</p>
@@ -147,6 +147,11 @@ function ProfileDetailModal({ profile, onClose, onTrain, onDelete }) {
             </p>
             <p className="text-[11px] text-slate-500 mt-0.5">Erstellt</p>
           </div>
+        </div>
+
+        {/* UUID – für API-Nutzung */}
+        <div className="mb-4 flex-shrink-0">
+          <UuidRow id={profile.id} />
         </div>
 
         {/* Search */}
@@ -632,6 +637,32 @@ function TrainModal({ profile, onClose }) {
   );
 }
 
+// ── UUID Copy Row ────────────────────────────────────────────
+// Wiederverwendbar in Card und Detail-Modal
+function UuidRow({ id }) {
+  const [copied, setCopied] = useState(false);
+  const copy = (e) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(id);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
+  };
+  return (
+    <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-black/20 border border-white/[0.06] group/uuid">
+      <span className="text-[10px] text-slate-600 font-medium flex-shrink-0">UUID</span>
+      <code className="text-[10px] font-mono text-slate-500 truncate flex-1 min-w-0">{id}</code>
+      <button
+        onClick={copy}
+        title="Copy profile_id"
+        className="flex-shrink-0 text-[10px] px-1.5 py-0.5 rounded border border-white/[0.08]
+                   text-slate-600 hover:text-white hover:border-white/20 transition-all"
+      >
+        {copied ? '✓' : 'Copy'}
+      </button>
+    </div>
+  );
+}
+
 // ── Profile Card ──────────────────────────────────────────────
 function ProfileCard({ profile, onClick, onTrain, onDelete }) {
   return (
@@ -661,12 +692,15 @@ function ProfileCard({ profile, onClick, onTrain, onDelete }) {
       {profile.template_id && (
         <p className="text-xs text-slate-600 mb-2">Template: {profile.template_id}</p>
       )}
-      <p className="text-xs text-slate-600 mb-4">
+      <p className="text-xs text-slate-600 mb-3">
         Erstellt {new Date(profile.created_at).toLocaleDateString('de')}
       </p>
 
+      {/* Profile UUID – for API use */}
+      <UuidRow id={profile.id} />
+
       {/* Click hint */}
-      <p className="text-[11px] text-slate-700 mb-3 group-hover:text-slate-500 transition-colors">
+      <p className="text-[11px] text-slate-700 mt-2 mb-3 group-hover:text-slate-500 transition-colors">
         ↗ Klicken für Details & Word Weights
       </p>
 
