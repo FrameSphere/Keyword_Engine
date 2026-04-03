@@ -16,6 +16,9 @@ import DocsAlgorithm  from './pages/docs/DocsAlgorithm.jsx';
 import DocsApi        from './pages/docs/DocsApi.jsx';
 import DocsTemplates  from './pages/docs/DocsTemplates.jsx';
 import Pricing       from './pages/Pricing.jsx';
+import TfidfGuide    from './pages/guides/TfidfGuide.jsx';
+import LongtailGuide from './pages/guides/LongtailGuide.jsx';
+import AiKeywordGuide from './pages/guides/AiKeywordGuide.jsx';
 
 function RequireAuth({ children }) {
   const { user, loading } = useAuth();
@@ -31,6 +34,9 @@ export default function App() {
       {/* Public */}
       <Route path="/"        element={<Layout><Landing /></Layout>} />
       <Route path="/pricing" element={<Layout><Pricing /></Layout>} />
+      <Route path="/guides/tfidf-keyword-extraction" element={<Layout><TfidfGuide /></Layout>} />
+      <Route path="/guides/longtail-keywords"         element={<Layout><LongtailGuide /></Layout>} />
+      <Route path="/guides/ai-keyword-extraction"     element={<Layout><AiKeywordGuide /></Layout>} />
       <Route path="/login"   element={<Login />} />
       <Route path="/register" element={<Register />} />
 

@@ -319,6 +319,72 @@ function CTA() {
   );
 }
 
+// ── Resource Guides ────────────────────────────────────────────
+const GUIDES = [
+  {
+    tag: 'Algorithm',
+    to: '/guides/tfidf-keyword-extraction',
+    title: 'TF-IDF Keyword Extraction: How the Algorithm Really Works',
+    desc: 'Understand the math behind TF-IDF, why it works for SEO, and how to calibrate it with your own corpus for domain-specific results.',
+    icon: '⬡',
+    color: 'blue',
+  },
+  {
+    tag: 'SEO Strategy',
+    to: '/guides/longtail-keywords',
+    title: 'Longtail Keywords: The Complete Guide to Low-Competition Phrases',
+    desc: 'Longtail keywords account for 70%+ of searches. Learn how to find them algorithmically and build a content strategy around them.',
+    icon: '⇄',
+    color: 'violet',
+  },
+  {
+    tag: 'AI & ML',
+    to: '/guides/ai-keyword-extraction',
+    title: 'AI Keyword Extraction: Semantic Models vs. Statistical Algorithms',
+    desc: 'When does a transformer model outperform TF-IDF? A deep comparison of embedding-based AI extraction vs. statistical frequency analysis.',
+    icon: '❖',
+    color: 'magenta',
+  },
+];
+
+function ResourceGuides() {
+  const colorMap = {
+    blue:    { badge: 'bg-blue-500/10 text-blue-400 border-blue-500/20',       icon: 'text-blue-400' },
+    violet:  { badge: 'bg-violet-500/10 text-violet-400 border-violet-500/20', icon: 'text-violet-400' },
+    magenta: { badge: 'bg-fuchsia-500/10 text-fuchsia-400 border-fuchsia-500/20', icon: 'text-fuchsia-400' },
+  };
+  return (
+    <section className="py-24 border-t border-white/[0.06]">
+      <div className="max-w-6xl mx-auto px-4">
+        <div className="text-center mb-12">
+          <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-3">Learn</p>
+          <h2 className="text-4xl font-bold text-white mb-4">Deep dives on keyword extraction</h2>
+          <p className="text-slate-400 max-w-xl mx-auto">
+            Comprehensive guides on the algorithms, strategies, and AI models behind modern SEO keyword analysis.
+          </p>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          {GUIDES.map(g => {
+            const c = colorMap[g.color];
+            return (
+              <Link key={g.to} to={g.to}
+                    className="card hover:border-white/[0.15] transition-all group flex flex-col">
+                <div className="flex items-center justify-between mb-4">
+                  <span className={`text-[10px] font-semibold px-2 py-1 rounded border uppercase tracking-wider ${c.badge}`}>{g.tag}</span>
+                  <span className={`text-xl ${c.icon}`}>{g.icon}</span>
+                </div>
+                <h3 className="font-semibold text-white group-hover:text-blue-300 transition-colors mb-3 leading-snug flex-1">{g.title}</h3>
+                <p className="text-sm text-slate-500 leading-relaxed mb-4">{g.desc}</p>
+                <p className="text-xs text-blue-400 font-medium">Read guide →</p>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ── Page ──────────────────────────────────────────────────────
 export default function Landing() {
   return (
@@ -326,6 +392,7 @@ export default function Landing() {
       <Hero />
       <Features />
       <HowItWorks />
+      <ResourceGuides />
       <ApiPreview />
       <PricingPreview />
       <CTA />
