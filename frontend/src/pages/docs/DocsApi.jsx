@@ -143,27 +143,34 @@ export default function DocsApi() {
         <CodeBlock lang="bash" code={`curl -X POST ${BASE_URL}/analyze \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
-  -d '{
-    "title": "Beste SEO Strategien 2025",
-    "content": "Suchmaschinenoptimierung ist im digitalen Marketing...",
-    "lang": "de",
-    "keyword_count": 15,
-    "longtail_count": 10
-  }'`} />
+  -d @- <<EOF
+{
+  "title": "Beste SEO Strategien 2025",
+  "content": "Suchmaschinenoptimierung ist im digitalen Marketing unverzichtbar.",
+  "lang": "de",
+  "keyword_count": 15,
+  "longtail_count": 10
+}
+EOF`} />
+        <p className="text-xs text-slate-500 mt-1 mb-4">
+          💡 The <code className="font-mono text-blue-300">-d @- &lt;&lt;EOF</code> pattern avoids shell quoting issues — use it whenever your content contains single quotes or special characters.
+        </p>
 
         {/* Example 2: with profile */}
         <p className="text-xs text-slate-500 uppercase tracking-wider font-medium mb-1 mt-4">Example — with trained profile</p>
         <CodeBlock lang="bash" code={`curl -X POST ${BASE_URL}/analyze \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
-  -d '{
-    "title": "Beste SEO Strategien 2025",
-    "content": "Suchmaschinenoptimierung ist im digitalen Marketing...",
-    "lang": "de",
-    "profile_id": "YOUR_PROFILE_UUID",
-    "keyword_count": 15,
-    "longtail_count": 10
-  }'`} />
+  -d @- <<EOF
+{
+  "title": "Beste SEO Strategien 2025",
+  "content": "Suchmaschinenoptimierung ist im digitalen Marketing unverzichtbar.",
+  "lang": "de",
+  "profile_id": "YOUR_PROFILE_UUID",
+  "keyword_count": 15,
+  "longtail_count": 10
+}
+EOF`} />
         <p className="text-xs text-slate-500 mt-1 mb-4">
           Get your profile UUIDs via <code className="font-mono text-blue-300">GET /profiles</code>. The profile's trained word weights and ignore list are applied automatically.
         </p>
@@ -173,14 +180,16 @@ export default function DocsApi() {
         <CodeBlock lang="bash" code={`curl -X POST ${BASE_URL}/analyze \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
-  -d '{
-    "title": "Beste SEO Strategien 2025",
-    "content": "Suchmaschinenoptimierung ist im digitalen Marketing...",
-    "lang": "de",
-    "mode": "ai",
-    "keyword_count": 15,
-    "longtail_count": 10
-  }'`} />
+  -d @- <<EOF
+{
+  "title": "Beste SEO Strategien 2025",
+  "content": "Suchmaschinenoptimierung ist im digitalen Marketing unverzichtbar.",
+  "lang": "de",
+  "mode": "ai",
+  "keyword_count": 15,
+  "longtail_count": 10
+}
+EOF`} />
         <p className="text-xs text-slate-500 mt-1 mb-4">
           <code className="font-mono text-blue-300">mode: "ai"</code> routes the request to the Hugging Face model instead of the TF-IDF engine. Requires Pro plan — returns <code className="font-mono text-red-400">403</code> otherwise.
         </p>
