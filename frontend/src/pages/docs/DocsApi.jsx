@@ -133,6 +133,8 @@ export default function DocsApi() {
           { name: 'keyword_count', type: 'integer', req: false, desc: 'Number of keywords to return (1–50, default 10)' },
           { name: 'longtail_count',type: 'integer', req: false, desc: 'Number of longtail phrases (1–50, default 10)' },
         ]} />
+        {/* Example 1: basic */}
+        <p className="text-xs text-slate-500 uppercase tracking-wider font-medium mb-1">Example — basic</p>
         <CodeBlock lang="bash" code={`curl -X POST ${BASE_URL}/analyze \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
@@ -143,14 +145,51 @@ export default function DocsApi() {
     "keyword_count": 15,
     "longtail_count": 10
   }'`} />
+
+        {/* Example 2: with profile */}
+        <p className="text-xs text-slate-500 uppercase tracking-wider font-medium mb-1 mt-4">Example — with trained profile</p>
+        <CodeBlock lang="bash" code={`curl -X POST ${BASE_URL}/analyze \\
+  -H "Authorization: Bearer YOUR_API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "title": "Beste SEO Strategien 2025",
+    "content": "Suchmaschinenoptimierung ist im digitalen Marketing...",
+    "lang": "de",
+    "profile_id": "YOUR_PROFILE_UUID",
+    "keyword_count": 15,
+    "longtail_count": 10
+  }'`} />
+        <p className="text-xs text-slate-500 mt-1 mb-4">
+          Get your profile UUIDs via <code className="font-mono text-blue-300">GET /profiles</code>. The profile's trained word weights and ignore list are applied automatically.
+        </p>
+
+        {/* Example 3: AI mode */}
+        <p className="text-xs text-slate-500 uppercase tracking-wider font-medium mb-1">Example — AI mode <span className="badge-magenta ml-1">Pro</span></p>
+        <CodeBlock lang="bash" code={`curl -X POST ${BASE_URL}/analyze \\
+  -H "Authorization: Bearer YOUR_API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "title": "Beste SEO Strategien 2025",
+    "content": "Suchmaschinenoptimierung ist im digitalen Marketing...",
+    "lang": "de",
+    "mode": "ai",
+    "keyword_count": 15,
+    "longtail_count": 10
+  }'`} />
+        <p className="text-xs text-slate-500 mt-1 mb-4">
+          <code className="font-mono text-blue-300">mode: "ai"</code> routes the request to the Hugging Face model instead of the TF-IDF engine. Requires Pro plan — returns <code className="font-mono text-red-400">403</code> otherwise.
+        </p>
+
+        {/* Response */}
+        <p className="text-xs text-slate-500 uppercase tracking-wider font-medium mb-1">Response</p>
         <CodeBlock lang="json" code={`{
   "ok": true,
-  "mode": "algorithmic",
+  "mode": "algorithmic",        // or "ai"
   "keywords": ["suchmaschinenoptimierung", "marketing", "ranking"],
   "longtailKeywords": ["lokale seo strategie", "keyword recherche tool"],
   "metaDescription": "Suchmaschinenoptimierung ist im digitalen Marketing unverzichtbar...",
   "lang": "de",
-  "profile_id": null
+  "profile_id": "YOUR_PROFILE_UUID"  // null if not used
 }`} />
       </Endpoint>
 

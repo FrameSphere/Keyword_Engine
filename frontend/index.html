@@ -60,6 +60,40 @@
 </head>
 <body>
   <div id="root"></div>
+
+  <!-- Static fallback for non-JS crawlers & social preview tools -->
+  <noscript>
+    <style>
+      .ns-wrap { font-family: system-ui, sans-serif; max-width: 900px; margin: 60px auto; padding: 0 24px; color: #e2e8f0; background: #0f1117; }
+      .ns-wrap h1 { font-size: 2rem; font-weight: 700; margin-bottom: .5rem; }
+      .ns-wrap p  { color: #94a3b8; line-height: 1.6; margin-bottom: 1rem; }
+      .ns-wrap a  { color: #3b82f6; }
+      .ns-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+      .ns-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 1rem; }
+      .ns-card h3 { font-size: .95rem; margin-bottom: .4rem; }
+      .ns-card p  { font-size: .85rem; margin: 0; }
+    </style>
+    <div class="ns-wrap">
+      <h1>KeyScope – AI Keyword Analysis Engine</h1>
+      <p>Extract high-value SEO keywords and longtail phrases from any text using our TF-IDF algorithm or AI-powered analysis. Build custom profiles, train the algorithm on your own content, and access all results via REST API.</p>
+      <div class="ns-grid">
+        <div class="ns-card">
+          <h3>🔍 Keyword Extraction</h3>
+          <p>Pull the most relevant keywords and longtail phrases from any text automatically.</p>
+        </div>
+        <div class="ns-card">
+          <h3>⚡ Custom Profiles</h3>
+          <p>Train the algorithm with your niche content for domain-specific keyword scores.</p>
+        </div>
+        <div class="ns-card">
+          <h3>🤖 AI Mode</h3>
+          <p>Route analyses through a Hugging Face model for AI-generated keyword suggestions (Pro).</p>
+        </div>
+      </div>
+      <p><a href="/pricing">View Pricing</a> · <a href="/register">Get Started Free</a> · <a href="/docs">API Docs</a></p>
+    </div>
+  </noscript>
+
   <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
