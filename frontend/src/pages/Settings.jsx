@@ -22,11 +22,11 @@ function UpgradeModal({ onClose }) {
   };
 
   const PRO_FEATURES = [
-    { icon: '⬡', label: '500 Analysen / Tag',      sub: 'statt 20' },
-    { icon: '◈', label: '50 Profile',               sub: 'statt 3' },
-    { icon: '📄', label: '200 Training-Dokumente',  sub: 'statt 20' },
-    { icon: '✦', label: 'AI-Modus',                 sub: 'HuggingFace-Modelle' },
-    { icon: '⚡', label: 'Priorität-Support',        sub: 'schnellere Antworten' },
+    { icon: '⬡', label: '500 Analyses / Day',      sub: 'instead of 20' },
+    { icon: '◈', label: '50 Profiles',               sub: 'instead of 3' },
+    { icon: '📄', label: '200 Training Documents',  sub: 'instead of 20' },
+    { icon: '✦', label: 'AI Mode',                 sub: 'HuggingFace Models' },
+    { icon: '⚡', label: 'Priority Support',        sub: 'faster responses' },
   ];
 
   return (
@@ -39,9 +39,9 @@ function UpgradeModal({ onClose }) {
             <div className="flex items-center gap-2 mb-1">
               <span className="badge-magenta text-sm px-3 py-1">PRO</span>
             </div>
-            <h2 className="text-xl font-bold text-white mt-2">Upgrade auf Pro</h2>
+            <h2 className="text-xl font-bold text-white mt-2">Upgrade to Pro</h2>
             <p className="text-sm text-slate-400 mt-1">
-              Schalte alle Features frei und analysiere ohne Limits.
+              Unlock all features and analyze without limits.
             </p>
           </div>
           <button onClick={onClose} className="text-slate-500 hover:text-white text-lg ml-4">✕</button>
@@ -64,9 +64,9 @@ function UpgradeModal({ onClose }) {
         {/* Price */}
         <div className="text-center mb-5 py-4 rounded-2xl bg-fuchsia-500/5 border border-fuchsia-500/20">
           <p className="text-3xl font-bold text-white">
-            €9<span className="text-base font-normal text-slate-400">/Monat</span>
+            €9<span className="text-base font-normal text-slate-400">/Month</span>
           </p>
-          <p className="text-xs text-slate-500 mt-1">Jederzeit kündbar · Keine Mindestlaufzeit</p>
+          <p className="text-xs text-slate-500 mt-1">Cancelable at any time · No minimum commitment</p>
         </div>
 
         {error && (
@@ -75,7 +75,7 @@ function UpgradeModal({ onClose }) {
 
         <div className="flex gap-3">
           <button onClick={onClose} className="btn-secondary flex-1 justify-center" disabled={loading}>
-            Abbrechen
+            Cancel
           </button>
           <button onClick={handleUpgrade} disabled={loading} className="flex-1 justify-center
             inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold
@@ -83,8 +83,8 @@ function UpgradeModal({ onClose }) {
             hover:from-fuchsia-500 hover:to-violet-500 transition-all shadow-lg
             disabled:opacity-50 disabled:cursor-not-allowed">
             {loading
-              ? <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"/>Weiterleitung…</>
-              : '✦ Jetzt upgraden → Stripe'}
+              ? <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"/>Redirecting…</>
+              : '✦ Upgrade now → Stripe'}
           </button>
         </div>
       </div>
@@ -116,7 +116,7 @@ function ManageBillingButton() {
         disabled={loading}
         className="text-xs px-3 py-1.5 rounded-lg font-medium btn-secondary disabled:opacity-50"
       >
-        {loading ? 'Weiterleitung…' : '⚙️ Abo verwalten'}
+        {loading ? 'Redirecting...' : '⚙️ Manage Subscription'}
       </button>
       {error && <p className="text-xs text-red-400">{error}</p>}
     </div>
@@ -177,7 +177,7 @@ export default function Settings() {
     <div className="animate-fade-in max-w-2xl">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">Settings</h1>
-        <p className="text-sm text-slate-500 mt-1">Konto & API-Zugang verwalten</p>
+        <p className="text-sm text-slate-500 mt-1">Manage Account & API Access</p>
       </div>
 
       {/* Plan message */}
@@ -189,10 +189,10 @@ export default function Settings() {
 
       {/* Account + Plan */}
       <div className="card mb-5">
-        <h2 className="font-semibold text-white mb-4">Konto</h2>
+        <h2 className="font-semibold text-white mb-4">Account</h2>
         <div className="space-y-3">
           <div className="flex items-center justify-between py-2 border-b border-white/[0.05]">
-            <p className="text-sm text-slate-400">E-Mail</p>
+            <p className="text-sm text-slate-400">Email</p>
             <p className="text-sm text-white">{user?.email}</p>
           </div>
           <div className="flex items-center justify-between py-2">
@@ -208,7 +208,7 @@ export default function Settings() {
                     bg-gradient-to-r from-fuchsia-600 to-violet-600 text-white
                     hover:from-fuchsia-500 hover:to-violet-500 transition-all"
                 >
-                  ✦ Upgrade auf Pro
+                  ✦ Upgrade to Pro
                 </button>
               )}
               {isPro && <ManageBillingButton />}
@@ -226,16 +226,16 @@ export default function Settings() {
           </div>
           <div className="grid grid-cols-2 gap-2 text-sm mb-4">
             <div className="flex items-center gap-2 text-slate-400">
-              <span className="text-fuchsia-500">✓</span> 500 Analysen/Tag
+              <span className="text-fuchsia-500">✓</span> 500 Analyses / Day
             </div>
             <div className="flex items-center gap-2 text-slate-400">
-              <span className="text-fuchsia-500">✓</span> 50 Profile
+              <span className="text-fuchsia-500">✓</span> 50 Profiles
             </div>
             <div className="flex items-center gap-2 text-slate-400">
-              <span className="text-fuchsia-500">✓</span> AI-Modus (HuggingFace)
+              <span className="text-fuchsia-500">✓</span> AI-Mode (HuggingFace)
             </div>
             <div className="flex items-center gap-2 text-slate-400">
-              <span className="text-fuchsia-500">✓</span> 200 Training-Docs
+              <span className="text-fuchsia-500">✓</span> 200 Training-Documents
             </div>
           </div>
           <button
@@ -244,7 +244,7 @@ export default function Settings() {
               bg-gradient-to-r from-fuchsia-600 to-violet-600 text-white
               hover:from-fuchsia-500 hover:to-violet-500 transition-all flex items-center gap-2"
           >
-            ✦ Jetzt upgraden – €9/Monat
+            ✦ Upgrade now – €9/month
           </button>
         </div>
       )}
@@ -253,7 +253,7 @@ export default function Settings() {
       <div className="card mb-5">
         <h2 className="font-semibold text-white mb-2">API Key</h2>
         <p className="text-xs text-slate-500 mb-4">
-          Für direkte API-Requests. Halte ihn geheim – er gewährt vollen Zugriff auf dein Konto.
+          For direct API requests. Keep it secret – it grants full access to your account.
         </p>
 
         {loading ? (
@@ -267,32 +267,32 @@ export default function Settings() {
                 {apiKey}
               </code>
               <button onClick={handleCopy} className="btn-secondary text-xs px-3 py-2 whitespace-nowrap">
-                {copied ? '✓ Kopiert' : 'Kopieren'}
+                {copied ? '✓ Copied' : 'Copy'}
               </button>
             </div>
             <div className="flex gap-2">
               <button onClick={handleGenerate} disabled={genLoading} className="btn-secondary text-xs">
-                {genLoading ? 'Regenerating…' : 'Neu generieren'}
+                {genLoading ? 'Regenerating…' : 'Generate New'}
               </button>
-              <button onClick={handleRevoke} className="btn-danger text-xs">Widerrufen</button>
+              <button onClick={handleRevoke} className="btn-danger text-xs">Revoke</button>
             </div>
           </div>
         ) : (
           <button onClick={handleGenerate} disabled={genLoading} className="btn-primary text-sm">
-            {genLoading ? 'Generiere…' : 'API Key generieren'}
+            {genLoading ? 'Generating…' : 'Generate API Key'}
           </button>
         )}
       </div>
 
       {/* Rate Limits */}
       <div className="card">
-        <h2 className="font-semibold text-white mb-3">Limits & Kontingente</h2>
+        <h2 className="font-semibold text-white mb-3">Limits & quotas</h2>
         <div className="space-y-2 text-sm">
           {[
-            ['Analysen / Tag',       isPro ? '500' : '20'],
-            ['Max. Profile',         isPro ? '50'  : '3'],
-            ['Training-Dokumente',   isPro ? '200' : '20'],
-            ['AI-Modus',             isPro ? '✓ Aktiv' : '✗ Pro only'],
+            ['Analyses / Day',       isPro ? '500' : '20'],
+            ['Max. Profiles',         isPro ? '50'  : '3'],
+            ['Training-Documents',   isPro ? '200' : '20'],
+            ['AI-Mode',             isPro ? '✓ Active' : '✗ Pro only'],
           ].map(([label, value]) => (
             <div key={label} className="flex justify-between py-1.5 border-b border-white/[0.04] last:border-0">
               <span className="text-slate-400">{label}</span>

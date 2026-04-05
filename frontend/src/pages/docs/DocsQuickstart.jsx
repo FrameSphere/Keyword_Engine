@@ -71,7 +71,7 @@ export default function DocsQuickstart() {
         <Step n={3} title="Choose a profile & language">
           <p className="text-slate-400 text-sm leading-relaxed">
             Select a profile from the dropdown (your default one is already there) and pick the language
-            of your text. KeyLens ships with stopword lists for <strong className="text-white">DE, EN, FR, ES, IT</strong>.
+            of your text. KeyScope ships with stopword lists for <strong className="text-white">DE, EN, FR, ES, IT</strong>.
             Custom profiles with your own training data amplify results dramatically — see{' '}
             <Link to="/docs/algorithm" className="text-blue-400 hover:underline">How it works</Link>.
           </p>

@@ -50,7 +50,7 @@ export default function Login() {
   };
 
   return (
-    <AuthShell title="Welcome back" subtitle="Sign in to your KeyLens account">
+    <AuthShell title="Welcome back" subtitle="Sign in to your KeyScope account">
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
           <div className="px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400">

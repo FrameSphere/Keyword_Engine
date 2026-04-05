@@ -94,8 +94,8 @@ export default function ProSuccessModal({ onClose }) {
             </svg>
             <div className="text-center"
                  style={{ animation: 'fadeIn 0.4s ease 1.0s both' }}>
-              <p className="text-white font-bold text-xl">Pro aktiviert!</p>
-              <p className="text-slate-400 text-sm mt-1">Dein Upgrade war erfolgreich.</p>
+              <p className="text-white font-bold text-xl">Pro activated!</p>
+              <p className="text-slate-400 text-sm mt-1">Your upgrade was successful.</p>
             </div>
           </div>
         </div>
@@ -120,8 +120,8 @@ export default function ProSuccessModal({ onClose }) {
                 </svg>
               </div>
               <div>
-                <p className="text-white font-bold text-lg leading-tight">Willkommen bei Pro</p>
-                <p className="text-slate-400 text-xs">Diese Features sind jetzt freigeschaltet</p>
+                <p className="text-white font-bold text-lg leading-tight">Welcome to Pro</p>
+                <p className="text-slate-400 text-xs">These features are now unlocked</p>
               </div>
             </div>
 
@@ -152,7 +152,7 @@ export default function ProSuccessModal({ onClose }) {
                 boxShadow: '0 0 24px rgba(192,38,211,0.3)',
               }}
             >
-              Jetzt loslegen →
+              Start now →
             </button>
           </div>
         </div>

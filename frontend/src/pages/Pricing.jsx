@@ -60,7 +60,7 @@ const FAQ = [
   },
   {
     q: 'What is profile training?',
-    a: 'You provide a corpus of example texts from your niche (e.g. 20 blog posts). KeyLens runs TF-IDF on them to learn which words are rare and valuable in your domain. These weights are then applied to every subsequent analysis with that profile.',
+    a: 'You provide a corpus of example texts from your niche (e.g. 20 blog posts). KeyScope runs TF-IDF on them to learn which words are rare and valuable in your domain. These weights are then applied to every subsequent analysis with that profile.',
   },
   {
     q: 'What is the AI mode?',
@@ -71,8 +71,8 @@ const FAQ = [
     a: 'Yes. Plan changes take effect immediately. If you downgrade, your data is preserved but access to Pro features is suspended.',
   },
   {
-    q: 'Gibt es eine Testphase für Pro?',
-    a: 'Aktuell ist kein automatischer Trial verfügbar. Du kannst jederzeit upgraden und downgraden — das Downgrade ist sofort wirksam und deine Daten bleiben erhalten.',
+    q: 'Is there a trial period for Pro?',
+    a: 'Currently, there is no automated trial available. You can upgrade or downgrade at any time — downgrading takes effect immediately and your data remains intact.',
   },
   {
     q: 'Do unused analyses roll over?',
@@ -214,9 +214,9 @@ export default function Pricing() {
                 ['Languages',             '5',            '5'],
                 ['REST API',              '✓',            '✓'],
                 ['Templates',             '✓',            '✓'],
-                ['Profile Training',      'bis 20 Docs',  'bis 200 Docs'],
+                ['Profile Training',      'up to 20 Docs',  'up to 200 Docs'],
                 ['AI Model mode',         '—',            '✓'],
-                ['Analysis history',      'begrenzt',     'vollständig'],
+                ['Analysis history',      'limited',     'complete'],
                 ['Support',               'Community',    'Priority'],
               ].map(([feat, free, pro], i) => (
                 <tr key={i} className={`border-b border-white/[0.04] last:border-0 ${i % 2 === 0 ? '' : 'bg-white/[0.015]'}`}>

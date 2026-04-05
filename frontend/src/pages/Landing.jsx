@@ -30,7 +30,7 @@ function Hero() {
         </h1>
 
         <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-          KeyLens analyzes your content with a custom-tuned TF-IDF algorithm or AI model,
+          KeyScope analyzes your content with a custom-tuned TF-IDF algorithm or AI model,
           returning ranked keywords, longtail phrases, and meta descriptions — via UI or API.
         </p>
 

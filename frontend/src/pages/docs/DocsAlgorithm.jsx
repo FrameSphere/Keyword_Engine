@@ -70,7 +70,7 @@ export default function DocsAlgorithm() {
       {/* TF-IDF Corpus Training */}
       <Section title="Profile training (TF-IDF corpus analysis)">
         <p className="text-slate-400 text-sm leading-relaxed mb-3">
-          When you train a profile, KeyLens runs a full corpus TF-IDF analysis across all your training texts.
+          When you train a profile, KeyScope runs a full corpus TF-IDF analysis across all your training texts.
           This creates a <em>weight map</em> — a dictionary of words to normalized importance scores — that is
           stored in the D1 database and applied to every subsequent analysis.
         </p>
@@ -100,7 +100,7 @@ export default function DocsAlgorithm() {
       {/* Longtail */}
       <Section title="Longtail keyword generation">
         <p className="text-slate-400 text-sm leading-relaxed mb-3">
-          After single-word scoring, KeyLens extracts <strong className="text-white">bigrams</strong> (2-word) and{' '}
+          After single-word scoring, KeyScope extracts <strong className="text-white">bigrams</strong> (2-word) and{' '}
           <strong className="text-white">trigrams</strong> (3-word) from the filtered token stream.
         </p>
         <FormulaBox

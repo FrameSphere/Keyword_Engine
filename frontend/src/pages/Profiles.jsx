@@ -139,13 +139,13 @@ function ProfileDetailModal({ profile, onClose, onTrain, onDelete }) {
           </div>
           <div className="card bg-white/[0.02] text-center py-3">
             <p className="text-xl font-bold text-white uppercase">{profile.language}</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">Sprache</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Language</p>
           </div>
           <div className="card bg-white/[0.02] text-center py-3">
             <p className="text-xl font-bold text-white">
               {profile.created_at ? new Date(profile.created_at).toLocaleDateString('de') : '–'}
             </p>
-            <p className="text-[11px] text-slate-500 mt-0.5">Erstellt</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Created</p>
           </div>
         </div>
 
@@ -165,7 +165,7 @@ function ProfileDetailModal({ profile, onClose, onTrain, onDelete }) {
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="input pl-8 text-sm"
-            placeholder="Wort suchen…"
+            placeholder="Search words..."
           />
           {search && (
             <button
@@ -184,8 +184,8 @@ function ProfileDetailModal({ profile, onClose, onTrain, onDelete }) {
           ) : words.length === 0 ? (
             <div className="text-center py-10 text-slate-600">
               {total === 0
-                ? 'Noch keine Gewichte – Profil trainieren!'
-                : 'Kein Wort gefunden.'}
+                ? 'No words found. Train the profile with some documents to see word weights here.'
+                : 'No words found.'}
             </div>
           ) : (
             <>
@@ -196,8 +196,8 @@ function ProfileDetailModal({ profile, onClose, onTrain, onDelete }) {
                     <span className="text-sm text-slate-200 w-32 flex-shrink-0 font-mono truncate">{w.word}</span>
                     <ScoreBar score={w.score} />
                     <div className="flex gap-3 text-[10px] text-slate-700 flex-shrink-0 opacity-0 group-hover:opacity-100">
-                      <span title="Dokument-Frequenz">df:{w.doc_freq}</span>
-                      <span title="Corpus-Frequenz">cf:{w.corpus_freq}</span>
+                      <span title="Document Frequency">df:{w.doc_freq}</span>
+                      <span title="Corpus Frequency">cf:{w.corpus_freq}</span>
                     </div>
                   </div>
                 ))}
@@ -211,12 +211,12 @@ function ProfileDetailModal({ profile, onClose, onTrain, onDelete }) {
                              hover:border-white/[0.15] rounded-xl transition-all flex items-center justify-center gap-2"
                 >
                   {searching
-                    ? <><span className="w-3 h-3 border border-blue-500 border-t-transparent rounded-full animate-spin"/>Laden…</>
-                    : `Weitere laden (${total - words.length} übrig)`}
+                    ? <><span className="w-3 h-3 border border-blue-500 border-t-transparent rounded-full animate-spin"/>Loading…</>
+                    : `Load more (${total - words.length} left)`}
                 </button>
               )}
               <p className="text-center text-[11px] text-slate-700 mt-2 pb-2">
-                {words.length} / {total.toLocaleString()} Wörter angezeigt
+                {words.length} / {total.toLocaleString()} Words listed
               </p>
             </>
           )}
@@ -227,11 +227,11 @@ function ProfileDetailModal({ profile, onClose, onTrain, onDelete }) {
           <div className="flex gap-2 pt-4 mt-2 border-t border-white/[0.07] flex-shrink-0">
             <button onClick={onTrain}
                     className="btn-secondary text-xs flex-1 justify-center">
-              ⬡ Trainieren
+              ⬡ Train
             </button>
             <button onClick={onDelete}
                     className="btn-danger text-xs px-4">
-              Löschen
+              Delete
             </button>
           </div>
         )}
@@ -693,7 +693,7 @@ function ProfileCard({ profile, onClick, onTrain, onDelete }) {
         <p className="text-xs text-slate-600 mb-2">Template: {profile.template_id}</p>
       )}
       <p className="text-xs text-slate-600 mb-3">
-        Erstellt {new Date(profile.created_at).toLocaleDateString('de')}
+        Created at {new Date(profile.created_at).toLocaleDateString('de')}
       </p>
 
       {/* Profile UUID – for API use */}
@@ -701,7 +701,7 @@ function ProfileCard({ profile, onClick, onTrain, onDelete }) {
 
       {/* Click hint */}
       <p className="text-[11px] text-slate-700 mt-2 mb-3 group-hover:text-slate-500 transition-colors">
-        ↗ Klicken für Details & Word Weights
+        ↗ Click for details & Word Weights
       </p>
 
       {!profile.is_system && (
@@ -759,7 +759,7 @@ export default function Profiles() {
         <div>
           <h1 className="text-2xl font-bold text-white">Profiles</h1>
           <p className="text-sm text-slate-500 mt-1">
-            {userProfiles.length} / {maxProfiles} eigene Profile
+            {userProfiles.length} / {maxProfiles} own Profiles
           </p>
         </div>
         <button
@@ -781,10 +781,10 @@ export default function Profiles() {
       {!loading && profiles.length === 0 && (
         <div className="card text-center py-14">
           <div className="text-4xl mb-4 opacity-20">◈</div>
-          <p className="text-white font-medium mb-2">Noch keine Profile</p>
-          <p className="text-sm text-slate-500 mb-6">Erstelle ein Profil und trainiere es mit deinen Texten</p>
+          <p className="text-white font-medium mb-2">No profiles yet</p>
+          <p className="text-sm text-slate-500 mb-6">Create a profile and train it with your texts</p>
           <button onClick={() => setShowCreate(true)} className="btn-primary mx-auto">
-            Erstes Profil erstellen
+            + Create your first Profile
           </button>
         </div>
       )}
@@ -793,7 +793,7 @@ export default function Profiles() {
       {!loading && systemProfiles.length > 0 && (
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-4">
-            <h2 className="text-sm font-medium text-slate-400">Vortranierte System-Profile</h2>
+            <h2 className="text-sm font-medium text-slate-400">Trained System Profiles</h2>
             <div className="flex-1 border-t border-white/[0.07]" />
           </div>
           <div className="grid md:grid-cols-2 gap-4">
@@ -815,7 +815,7 @@ export default function Profiles() {
         <div>
           {systemProfiles.length > 0 && (
             <div className="flex items-center gap-2 mb-4">
-              <h2 className="text-sm font-medium text-slate-400">Meine Profile</h2>
+              <h2 className="text-sm font-medium text-slate-400">My Profiles</h2>
               <div className="flex-1 border-t border-white/[0.07]" />
             </div>
           )}
