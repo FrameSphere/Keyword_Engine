@@ -188,7 +188,7 @@ function HowItWorks() {
 
 // ── API Preview ───────────────────────────────────────────────
 function ApiPreview() {
-  const code = `curl -X POST https://keyscope-worker.karol-paschek.workers.dev/analyze \\
+  const code = `curl -X POST https://keyscope.pages.dev/api/analyze \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{

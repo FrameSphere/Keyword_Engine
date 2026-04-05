@@ -105,7 +105,7 @@ export default function DocsQuickstart() {
 
         <Step n={2} title="Make your first request">
           <p className="text-slate-400 text-sm leading-relaxed mb-1">Send a <code className="font-mono text-blue-300">POST</code> to the analyze endpoint:</p>
-          <CodeBlock lang="bash" code={`curl -X POST https://keyscope-worker.karol-paschek.workers.dev/analyze \\
+          <CodeBlock lang="bash" code={`curl -X POST https://keyscope.pages.dev/api/analyze \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
