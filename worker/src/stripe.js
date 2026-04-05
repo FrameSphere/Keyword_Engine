@@ -171,6 +171,15 @@ export async function handleStripe(request, env, path, user) {
     if (!KEY || !PRICE_ID) return err('Stripe nicht konfiguriert', 500);
     if (user.plan === 'pro') return err('Du hast bereits Pro.', 400);
 
+    // Determine billing cycle: monthly (default) or yearly
+    let body = {};
+    try { body = await request.json(); } catch {}
+    const isYearly   = body.billing === 'yearly';
+    const YEARLY_ID  = env.STRIPE_PRICE_ID_YEARLY;
+    const selectedPriceId = isYearly && YEARLY_ID && YEARLY_ID !== 'REPLACE_WITH_YEARLY_PRICE_ID'
+      ? YEARLY_ID
+      : PRICE_ID;
+
     // Stripe-Customer anlegen falls noch nicht vorhanden
     let customerId = user.stripe_customer_id;
     if (!customerId) {
@@ -187,7 +196,7 @@ export async function handleStripe(request, env, path, user) {
     const session = await stripePost('/checkout/sessions', {
       mode: 'subscription',
       customer: customerId,
-      'line_items[0][price]': PRICE_ID,
+      'line_items[0][price]': selectedPriceId,
       'line_items[0][quantity]': '1',
       'subscription_data[metadata][user_id]': user.id,
       'metadata[user_id]': user.id,

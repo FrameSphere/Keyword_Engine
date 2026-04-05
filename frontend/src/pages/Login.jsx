@@ -14,8 +14,26 @@ function AuthShell({ title, subtitle, children }) {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold"
-                 style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>KS</div>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+                <defs>
+                  <linearGradient id="a" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#2563EB"/>
+                    <stop offset="100%" stop-color="#7C3AED"/>
+                  </linearGradient>
+                  <linearGradient id="b" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#D946EF"/>
+                    <stop offset="100%" stop-color="#7C3AED"/>
+                  </linearGradient>
+                </defs>
+                <rect width="64" height="64" rx="14" fill="url(#a)"/>
+                <circle cx="26" cy="32" r="12" stroke="white" stroke-width="3.5" fill="none" opacity="0.95"/>
+                <circle cx="26" cy="32" r="4" fill="url(#b)" opacity="0.9"/>
+                <line x1="35" y1="32" x2="52" y2="32" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
+                <line x1="44" y1="32" x2="44" y2="38" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
+                <line x1="49" y1="32" x2="49" y2="36" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
+              </svg>
+            </div>
             <span className="font-bold text-xl text-white tracking-tight">Key<span className="gradient-text">Scope</span></span>
           </Link>
           <h1 className="text-2xl font-bold text-white mt-6 mb-1">{title}</h1>

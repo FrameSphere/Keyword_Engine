@@ -19,6 +19,9 @@ import Pricing       from './pages/Pricing.jsx';
 import TfidfGuide    from './pages/guides/TfidfGuide.jsx';
 import LongtailGuide from './pages/guides/LongtailGuide.jsx';
 import AiKeywordGuide from './pages/guides/AiKeywordGuide.jsx';
+import Privacy       from './pages/Privacy.jsx';
+import Terms         from './pages/Terms.jsx';
+import Legal         from './pages/Legal.jsx';
 
 function RequireAuth({ children }) {
   const { user, loading } = useAuth();
@@ -37,6 +40,9 @@ export default function App() {
       <Route path="/guides/tfidf-keyword-extraction" element={<Layout><TfidfGuide /></Layout>} />
       <Route path="/guides/longtail-keywords"         element={<Layout><LongtailGuide /></Layout>} />
       <Route path="/guides/ai-keyword-extraction"     element={<Layout><AiKeywordGuide /></Layout>} />
+      <Route path="/privacy" element={<Layout><Privacy /></Layout>} />
+      <Route path="/terms"   element={<Layout><Terms /></Layout>} />
+      <Route path="/legal"   element={<Layout><Legal /></Layout>} />
       <Route path="/login"   element={<Login />} />
       <Route path="/register" element={<Register />} />
 

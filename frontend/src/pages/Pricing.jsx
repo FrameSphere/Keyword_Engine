@@ -99,7 +99,7 @@ export default function Pricing() {
     }
     setCheckoutLoading(true);
     try {
-      const { url } = await api.stripe.checkout();
+      const { url } = await api.stripe.checkout(yearly ? 'yearly' : 'monthly');
       window.location.href = url;
     } catch (e) {
       alert(e.message);
@@ -152,11 +152,11 @@ export default function Pricing() {
                   {plan.price.monthly === 0 ? 'Free' : `€${(yearly ? plan.price.yearly : plan.price.monthly).toFixed(2).replace('.00', '')}`}
                 </span>
                 {plan.price.monthly > 0 && (
-                  <span className="text-slate-500 text-sm mb-1.5">/ Monat</span>
+                  <span className="text-slate-500 text-sm mb-1.5">/ month</span>
                 )}
               </div>
               {plan.price.monthly > 0 && yearly && (
-                <p className="text-xs text-emerald-400">Abgerechnet €{(plan.price.yearly * 12).toFixed(2)}/Jahr</p>
+                <p className="text-xs text-emerald-400">Billed €{(plan.price.yearly * 12).toFixed(2)} / year</p>
               )}
               <p className="text-slate-500 text-sm mt-2">{plan.desc}</p>
             </div>

@@ -118,7 +118,7 @@ export const api = {
 
   // Stripe
   stripe: {
-    checkout: () => req('/stripe/checkout', { method: 'POST' }),
+    checkout: (billing = 'monthly') => req('/stripe/checkout', { method: 'POST', body: JSON.stringify({ billing }) }),
     portal:   () => req('/stripe/portal',   { method: 'POST' }),
   },
 };
