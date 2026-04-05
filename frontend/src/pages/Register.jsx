@@ -13,8 +13,8 @@ function AuthShell({ title, subtitle, children }) {
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold"
-                 style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>KL</div>
-            <span className="font-bold text-xl text-white tracking-tight">Key<span className="gradient-text">Lens</span></span>
+                 style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>KS</div>
+            <span className="font-bold text-xl text-white tracking-tight">Key<span className="gradient-text">Scope</span></span>
           </Link>
           <h1 className="text-2xl font-bold text-white mt-6 mb-1">{title}</h1>
           <p className="text-sm text-slate-500">{subtitle}</p>
