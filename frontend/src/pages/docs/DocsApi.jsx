@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const BASE_URL = 'https://keyscope.pages.dev/api/';
+const BASE_URL = 'https://keyscope.pages.dev/api';
 
 function CodeBlock({ code, lang = 'bash' }) {
   const [copied, setCopied] = useState(false);
