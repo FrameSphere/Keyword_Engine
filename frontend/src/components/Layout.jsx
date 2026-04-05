@@ -180,7 +180,7 @@ function Footer() {
         </div>
         <div className="border-t border-white/[0.06] pt-6 flex items-center justify-between">
           <p className="text-xs text-slate-600">© {new Date().getFullYear()} KeyScope powered by 
-            <a href="https://frame-sphere.vercel.app" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">FrameSphere</a>
+            <a href="https://frame-sphere.vercel.app" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-blue-300"> FrameSphere </a>
              All rights reserved.</p>
           <span className="badge-blue text-[10px]">v1.0</span>
         </div>
