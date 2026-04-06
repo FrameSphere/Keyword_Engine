@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import WelcomeModal from '../components/WelcomeModal.jsx';
+import OAuthButtons from '../components/OAuthButtons.jsx';
 
 function AuthShell({ title, subtitle, children }) {
   return (
@@ -76,6 +77,7 @@ export default function Register() {
         <WelcomeModal onClose={() => { setShowWelcome(false); navigate('/app'); }} />
       )}
       <AuthShell title="Create your account" subtitle="Free forever — no credit card needed">
+      <OAuthButtons label="Sign up" />
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
           <div className="px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400">
@@ -102,7 +104,9 @@ export default function Register() {
           {loading ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"/> : 'Create account'}
         </button>
         <p className="text-center text-xs text-slate-600">
-          By registering you agree to our Terms of Service and Privacy Policy.
+          By registering you agree to our{' '}
+          <Link to="/terms" className="text-slate-500 hover:text-white transition-colors">Terms of Service</Link>{' '}and{' '}
+          <Link to="/privacy" className="text-slate-500 hover:text-white transition-colors">Privacy Policy</Link>.
         </p>
       </form>
       <p className="text-center text-sm text-slate-500 mt-5">

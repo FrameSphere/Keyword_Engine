@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import OAuthButtons from '../components/OAuthButtons.jsx';
+
+// Store provider before redirect so callback knows which one was used
+function startOAuth(provider) {
+  sessionStorage.setItem('oauth_provider', provider);
+}
 
 function AuthShell({ title, subtitle, children }) {
   return (
@@ -69,6 +75,7 @@ export default function Login() {
 
   return (
     <AuthShell title="Welcome back" subtitle="Sign in to your KeyScope account">
+      <OAuthButtons label="Sign in" />
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
           <div className="px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400">

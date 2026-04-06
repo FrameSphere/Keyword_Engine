@@ -30,6 +30,10 @@ export const api = {
       req('/auth/logout', { method: 'POST' }),
     me: () =>
       req('/auth/me'),
+    resendVerification: () =>
+      req('/auth/resend-verification', { method: 'POST' }),
+    oauthExchange: (provider, code, redirect_uri) =>
+      req('/auth/oauth/exchange', { method: 'POST', body: JSON.stringify({ provider, code, redirect_uri }) }),
   },
 
   analyze: (payload) =>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api.js';
 import { useAuth } from '../context/AuthContext.jsx';
+import EmailVerificationBanner from '../components/EmailVerificationBanner.jsx';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -31,6 +32,7 @@ export default function Dashboard() {
 
   return (
     <div className="animate-fade-in">
+      {user && !user.email_verified && <EmailVerificationBanner />}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">Dashboard</h1>
         <p className="text-sm text-slate-500 mt-1">Welcome back, {user?.email}</p>

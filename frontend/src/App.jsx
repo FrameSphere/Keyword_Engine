@@ -22,6 +22,7 @@ import AiKeywordGuide from './pages/guides/AiKeywordGuide.jsx';
 import Privacy       from './pages/Privacy.jsx';
 import Terms         from './pages/Terms.jsx';
 import Legal         from './pages/Legal.jsx';
+import AuthCallback  from './pages/AuthCallback.jsx';
 
 function RequireAuth({ children }) {
   const { user, loading } = useAuth();
@@ -43,8 +44,11 @@ export default function App() {
       <Route path="/privacy" element={<Layout><Privacy /></Layout>} />
       <Route path="/terms"   element={<Layout><Terms /></Layout>} />
       <Route path="/legal"   element={<Layout><Legal /></Layout>} />
-      <Route path="/login"   element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route path="/login"    element={<Login />} />
+      <Route path="/register"  element={<Register />} />
+      {/* OAuth callback + email verification – no Layout wrapper, standalone pages */}
+      <Route path="/auth/callback"     element={<AuthCallback />} />
+      <Route path="/auth/verify-email" element={<AuthCallback />} />
 
       {/* Docs */}
       <Route path="/docs" element={<Layout><DocsLayout /></Layout>}>

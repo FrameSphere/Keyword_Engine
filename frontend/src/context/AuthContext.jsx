@@ -30,6 +30,12 @@ export function AuthProvider({ children }) {
     return d;
   };
 
+  // Called after OAuth exchange returns a token
+  const loginWithToken = (token, user) => {
+    localStorage.setItem('keyscope_token', token);
+    setUser(user);
+  };
+
   const logout = async () => {
     await api.auth.logout().catch(() => {});
     localStorage.removeItem('keyscope_token');
@@ -45,7 +51,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, login, register, loginWithToken, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );
