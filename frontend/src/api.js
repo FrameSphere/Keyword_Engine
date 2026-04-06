@@ -117,7 +117,8 @@ export const api = {
 
   // Account
   account: {
-    downgrade: () => req('/account/downgrade', { method: 'POST' }),
+    downgrade:   () => req('/account/downgrade', { method: 'POST' }),
+    deleteAccount: () => req('/account', { method: 'DELETE', body: JSON.stringify({ confirm: 'DELETE' }) }),
   },
 
   // Stripe

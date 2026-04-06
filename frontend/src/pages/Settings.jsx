@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import ProSuccessModal from '../components/ProSuccessModal.jsx';
@@ -123,10 +123,179 @@ function ManageBillingButton() {
   );
 }
 
+// ── Delete Account Modal ────────────────────────────────
+function DeleteAccountModal({ isPro, onClose, onDeleted }) {
+  const [step,      setStep]      = useState(isPro ? 'warn-pro' : 'confirm');
+  const [inputVal,  setInputVal]  = useState('');
+  const [loading,   setLoading]   = useState(false);
+  const [error,     setError]     = useState('');
+
+  const handleDelete = async () => {
+    if (inputVal !== 'DELETE') { setError('Please type DELETE exactly.'); return; }
+    setLoading(true);
+    setError('');
+    try {
+      await api.account.deleteAccount();
+      onDeleted();
+    } catch (e) {
+      setError(e.message);
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm"
+         style={{ animation: 'ks-fadeIn 0.2s ease' }}>
+      <div className="w-full max-w-md"
+           style={{
+             background: 'linear-gradient(145deg,#0d1321,#111827)',
+             border: '1px solid rgba(239,68,68,0.2)',
+             borderRadius: '20px',
+             boxShadow: '0 0 60px rgba(239,68,68,0.08), 0 24px 48px rgba(0,0,0,0.5)',
+             animation: 'ks-slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1)',
+           }}>
+
+        {/* Top accent bar */}
+        <div style={{ height: '3px', background: 'linear-gradient(90deg,#dc2626,#ef4444)', borderRadius: '20px 20px 0 0' }} />
+
+        <div className="p-6">
+          {/* ── Step 1: Warn Pro user ── */}
+          {step === 'warn-pro' && (
+            <>
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0"
+                     style={{ background: 'rgba(234,179,8,0.1)', border: '1px solid rgba(234,179,8,0.25)' }}>
+                  <span className="text-yellow-400 text-xl">⚠</span>
+                </div>
+                <div>
+                  <p className="text-white font-bold text-lg leading-tight">Cancel subscription first</p>
+                  <p className="text-slate-500 text-xs mt-0.5">You have an active Pro subscription</p>
+                </div>
+                <button onClick={onClose} className="ml-auto text-slate-600 hover:text-white transition-colors">✕</button>
+              </div>
+
+              <div className="rounded-xl p-4 mb-5 text-sm leading-6 text-slate-400"
+                   style={{ background: 'rgba(234,179,8,0.06)', border: '1px solid rgba(234,179,8,0.18)' }}>
+                <p className="text-yellow-300 font-semibold mb-1">Before deleting your account:</p>
+                <ol className="list-decimal pl-4 space-y-1">
+                  <li>Go to <strong className="text-white">Manage Subscription</strong> below and cancel your Pro plan in the Stripe billing portal.</li>
+                  <li>Wait for the confirmation email from Stripe.</li>
+                  <li>Come back here and delete your account.</li>
+                </ol>
+                <p className="mt-3 text-xs text-slate-500">
+                  If you delete without cancelling, your card may still be charged for the current period.
+                  Stripe does not issue automatic refunds.
+                </p>
+              </div>
+
+              <div className="flex gap-3">
+                <button onClick={onClose} className="btn-secondary flex-1 justify-center">Cancel</button>
+                <button
+                  onClick={async () => {
+                    try {
+                      const { url } = await api.stripe.portal();
+                      window.location.href = url;
+                    } catch (e) { setError(e.message); }
+                  }}
+                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+                  style={{ background: 'linear-gradient(135deg,#f59e0b,#d97706)' }}
+                >
+                  ⚙️ Open Billing Portal
+                </button>
+              </div>
+              <button
+                onClick={() => setStep('confirm')}
+                className="w-full mt-3 text-xs text-slate-600 hover:text-red-400 transition-colors text-center py-1"
+              >
+                I already cancelled — continue to delete account
+              </button>
+              {error && <p className="text-xs text-red-400 mt-2 text-center">{error}</p>}
+            </>
+          )}
+
+          {/* ── Step 2: Type DELETE confirmation ── */}
+          {step === 'confirm' && (
+            <>
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0"
+                     style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round">
+                    <polyline points="3 6 5 6 21 6"/>
+                    <path d="M19 6l-1 14H6L5 6"/>
+                    <path d="M10 11v6M14 11v6"/>
+                    <path d="M9 6V4h6v2"/>
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-white font-bold text-lg leading-tight">Delete account permanently</p>
+                  <p className="text-slate-500 text-xs mt-0.5">This cannot be undone</p>
+                </div>
+                <button onClick={onClose} className="ml-auto text-slate-600 hover:text-white transition-colors">✕</button>
+              </div>
+
+              <div className="rounded-xl p-4 mb-5 text-sm text-slate-400 leading-6"
+                   style={{ background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.15)' }}>
+                <p className="text-red-400 font-semibold mb-1">The following will be permanently deleted:</p>
+                <ul className="list-disc pl-4 space-y-0.5 text-xs">
+                  <li>Your account and login credentials</li>
+                  <li>All keyword profiles and training data</li>
+                  <li>Your entire analysis history</li>
+                  <li>Your API key and all active sessions</li>
+                </ul>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-xs text-slate-500 mb-2">
+                  Type <span className="font-mono font-bold text-red-400">DELETE</span> to confirm:
+                </label>
+                <input
+                  type="text"
+                  value={inputVal}
+                  onChange={e => { setInputVal(e.target.value); setError(''); }}
+                  placeholder="DELETE"
+                  className="input font-mono"
+                  autoFocus
+                />
+              </div>
+
+              {error && (
+                <p className="text-xs text-red-400 mb-3">{error}</p>
+              )}
+
+              <div className="flex gap-3">
+                <button onClick={onClose} className="btn-secondary flex-1 justify-center" disabled={loading}>Cancel</button>
+                <button
+                  onClick={handleDelete}
+                  disabled={loading || inputVal !== 'DELETE'}
+                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  style={{ background: inputVal === 'DELETE' ? '#dc2626' : 'rgba(220,38,38,0.3)' }}
+                >
+                  {loading
+                    ? <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Deleting…</>
+                    : '🗑 Delete my account'}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes ks-fadeIn  { from{opacity:0} to{opacity:1} }
+        @keyframes ks-slideUp {
+          from{opacity:0;transform:translateY(24px) scale(0.97)}
+          to  {opacity:1;transform:translateY(0)    scale(1)}
+        }
+      `}</style>
+    </div>
+  );
+}
+
 // ── Main Settings Page ────────────────────────────────────────
 export default function Settings() {
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser, logout } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const [apiKey,     setApiKey]     = useState(null);
   const [loading,    setLoading]    = useState(true);
@@ -135,6 +304,7 @@ export default function Settings() {
   const [showUpgrade,     setShowUpgrade]     = useState(false);
   const [showProSuccess,  setShowProSuccess]  = useState(false);
   const [planMsg,         setPlanMsg]         = useState('');
+  const [showDelete,      setShowDelete]      = useState(false);
 
   // ?upgraded=1 nach Stripe-Redirect → Plan refreshen & Erfolgs-Modal zeigen
   useEffect(() => {
@@ -314,6 +484,41 @@ export default function Settings() {
       {/* Pro-Success Modal nach Stripe-Redirect */}
       {showProSuccess && (
         <ProSuccessModal onClose={() => setShowProSuccess(false)} />
+      )}
+
+      {/* ── Danger Zone ── */}
+      <div className="card mt-5" style={{ borderColor: 'rgba(239,68,68,0.15)' }}>
+        <h2 className="font-semibold text-red-400 mb-1">Danger Zone</h2>
+        <p className="text-xs text-slate-500 mb-4">
+          Permanently delete your account and all associated data. This action cannot be reversed.
+        </p>
+        <button
+          onClick={() => setShowDelete(true)}
+          className="text-sm font-medium px-4 py-2 rounded-xl transition-all"
+          style={{
+            background: 'rgba(239,68,68,0.08)',
+            border: '1px solid rgba(239,68,68,0.2)',
+            color: '#f87171',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.15)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.4)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.08)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }}
+        >
+          🗑 Delete account
+        </button>
+      </div>
+
+      {/* Delete Account Modal */}
+      {showDelete && (
+        <DeleteAccountModal
+          isPro={isPro}
+          onClose={() => setShowDelete(false)}
+          onDeleted={async () => {
+            // Clear local auth state and redirect to landing
+            localStorage.removeItem('keyscope_token');
+            await logout().catch(() => {});
+            navigate('/', { replace: true });
+          }}
+        />
       )}
     </div>
   );
