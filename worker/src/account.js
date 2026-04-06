@@ -36,7 +36,7 @@ export async function handleAccount(request, env, user, path) {
     await env.DB.prepare(`DELETE FROM api_usage           WHERE user_id = ?`).bind(id).run();
     await env.DB.prepare(`DELETE FROM ignore_words        WHERE user_id = ?`).bind(id).run();
     await env.DB.prepare(`DELETE FROM analyses            WHERE user_id = ?`).bind(id).run();
-    await env.DB.prepare(`DELETE FROM weights             WHERE profile_id IN (SELECT id FROM profiles WHERE user_id = ?)`).bind(id).run();
+    await env.DB.prepare(`DELETE FROM word_weights        WHERE profile_id IN (SELECT id FROM profiles WHERE user_id = ?)`).bind(id).run();
     await env.DB.prepare(`DELETE FROM profiles            WHERE user_id = ?`).bind(id).run();
     await env.DB.prepare(`DELETE FROM users               WHERE id = ?`).bind(id).run();
 
