@@ -29,7 +29,20 @@ export async function onRequest(context) {
     duplex: 'half',
   });
 
-  const response = await fetch(workerReq);
+  // IMPORTANT: redirect:'manual' prevents fetch from automatically following
+  // 302 redirects. Without this, OAuth redirects to Google/GitHub would be
+  // silently followed and their HTML served under our domain – causing CSP
+  // violations (base-uri, script-src from gstatic.com) and a broken login UI.
+  const response = await fetch(workerReq, { redirect: 'manual' });
+
+  // Forward 3xx redirects directly to the browser so the user's tab navigates
+  // to the real OAuth provider page (e.g. accounts.google.com).
+  if (response.status >= 300 && response.status < 400) {
+    const location = response.headers.get('Location');
+    if (location) {
+      return Response.redirect(location, response.status);
+    }
+  }
 
   // Forward the response back – update CORS origin to match Pages domain
   const resHeaders = new Headers(response.headers);
