@@ -15,10 +15,16 @@ HF_SPACES_URL = "https://REPLACE-WITH-YOUR-HF-SPACE.hf.space"
 STRIPE_PRICE_ID         = "price_1THsunEC9c8leIGWHkmXcPWh"
 # Yearly price = 10x monthly (e.g. €89.88/yr ≈ €7.49/mo). Add in Stripe Dashboard, then replace:
 STRIPE_PRICE_ID_YEARLY  = "price_1TJ0dVEC9c8leIGWJzCi2gRt"
+# OAuth Client IDs (public – safe to commit)
+GOOGLE_CLIENT_ID = "REPLACE_WITH_GOOGLE_CLIENT_ID"
+GITHUB_CLIENT_ID = "REPLACE_WITH_GITHUB_CLIENT_ID"
 
 # Secrets (per wrangler secret put):
 # STRIPE_SECRET_KEY      – sk_live_... oder sk_test_...
 # STRIPE_WEBHOOK_SECRET  – whsec_...
+# RESEND_API_KEY         – re_... (resend.com, free 3k emails/month, 100/day)
+# GOOGLE_CLIENT_SECRET   – from console.cloud.google.com
+# GITHUB_CLIENT_SECRET   – from github.com/settings/applications
 
 [dev]
 port = 8787
