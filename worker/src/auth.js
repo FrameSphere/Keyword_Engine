@@ -89,7 +89,7 @@ async function sendVerificationEmail(env, email, token) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'KeyScope <onboarding@resend.dev>',
+      from: 'KeyScope <onboarding@resend.dev>', // TODO: switch to noreply@framesphere.com after DNS verification
       to:   [email],
       subject: 'Confirm your KeyScope email address',
       html,

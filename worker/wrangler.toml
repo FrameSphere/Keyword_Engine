@@ -16,8 +16,8 @@ STRIPE_PRICE_ID         = "price_1THsunEC9c8leIGWHkmXcPWh"
 # Yearly price = 10x monthly (e.g. €89.88/yr ≈ €7.49/mo). Add in Stripe Dashboard, then replace:
 STRIPE_PRICE_ID_YEARLY  = "price_1TJ0dVEC9c8leIGWJzCi2gRt"
 # OAuth Client IDs (public – safe to commit)
-GOOGLE_CLIENT_ID = "REPLACE_WITH_GOOGLE_CLIENT_ID"
-GITHUB_CLIENT_ID = "REPLACE_WITH_GITHUB_CLIENT_ID"
+GOOGLE_CLIENT_ID = "751090504987-6ahquvu1kue4n2uakf8fc4ttniueh1bk.apps.googleusercontent.com"
+GITHUB_CLIENT_ID = "Ov23liWsn8wqHUtcO4vl"
 
 # Secrets (per wrangler secret put):
 # STRIPE_SECRET_KEY      – sk_live_... oder sk_test_...
