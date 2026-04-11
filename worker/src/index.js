@@ -29,6 +29,7 @@ export default {
         return cors(json({ ok: true, version: '1.0.0' }), env);
       }
 
+      // All /auth/* routes are handled by handleAuth (includes /auth/framesphere initiation)
       if (path.startsWith('/auth/')) {
         return cors(await handleAuth(request, env, path), env);
       }

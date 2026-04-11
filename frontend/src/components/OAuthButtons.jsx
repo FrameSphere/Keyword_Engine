@@ -1,25 +1,48 @@
 // ============================================================
 // KeyScope – OAuthButtons
-// Shared component for Google + GitHub sign-in/up buttons.
+// Shared component for Google, GitHub, and FrameSphere sign-in/up buttons.
 // Used in Login.jsx and Register.jsx.
 // ============================================================
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
-// Build the OAuth initiation URL (goes through our worker/proxy)
 function oauthUrl(provider) {
   return `${API_BASE}/auth/oauth/${provider}`;
 }
 
+// FrameSphere uses its own initiation endpoint (not the generic /oauth/ path)
+const frameSphereUrl = `${API_BASE}/auth/framesphere`;
+
 export default function OAuthButtons({ label = 'Continue' }) {
   const handleOAuth = (provider) => {
-    // Store provider name before redirect so AuthCallback can identify it
     sessionStorage.setItem('oauth_provider', provider);
     window.location.href = oauthUrl(provider);
   };
 
+  const handleFrameSphere = () => {
+    sessionStorage.setItem('oauth_provider', 'framesphere');
+    window.location.href = frameSphereUrl;
+  };
+
   return (
     <div className="space-y-2.5">
+      {/* FrameSphere SSO */}
+      <button
+        type="button"
+        onClick={handleFrameSphere}
+        className="w-full flex items-center justify-center gap-3 px-4 py-2.5 rounded-xl
+                   border border-white/[0.15] bg-gradient-to-r from-blue-600/10 to-violet-600/10
+                   text-white text-sm font-medium
+                   hover:from-blue-600/20 hover:to-violet-600/20 hover:border-white/[0.25]
+                   transition-all"
+      >
+        {/* FrameSphere FS logo */}
+        <div className="w-[18px] h-[18px] rounded-[5px] bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center flex-shrink-0">
+          <span className="text-white font-black text-[9px] leading-none">FS</span>
+        </div>
+        {label} with FrameSphere
+      </button>
+
       {/* Google */}
       <button
         type="button"
@@ -28,7 +51,6 @@ export default function OAuthButtons({ label = 'Continue' }) {
                    border border-white/[0.10] bg-white/[0.03] text-white text-sm font-medium
                    hover:bg-white/[0.07] hover:border-white/[0.18] transition-all"
       >
-        {/* Google G logo */}
         <svg width="18" height="18" viewBox="0 0 48 48" fill="none">
           <path d="M43.6 20.5H42V20H24v8h11.3C33.7 32.3 29.3 35 24 35c-6.1 0-11-4.9-11-11s4.9-11 11-11c2.8 0 5.3 1 7.2 2.7l5.7-5.7C33.5 7.1 28.9 5 24 5 12.9 5 4 13.9 4 25s8.9 20 20 20 20-8.9 20-20c0-1.5-.2-2.9-.4-4.5z" fill="#FFC107"/>
           <path d="m6.3 14.7 6.6 4.8C14.5 16 19 13 24 13c2.8 0 5.3 1 7.2 2.7l5.7-5.7C33.5 7.1 28.9 5 24 5c-7.7 0-14.3 4.4-17.7 9.7z" fill="#FF3D00"/>
@@ -46,7 +68,6 @@ export default function OAuthButtons({ label = 'Continue' }) {
                    border border-white/[0.10] bg-white/[0.03] text-white text-sm font-medium
                    hover:bg-white/[0.07] hover:border-white/[0.18] transition-all"
       >
-        {/* GitHub Invertocat */}
         <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
           <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.1.82-.26.82-.58
                    0-.28-.01-1.03-.02-2.03-3.34.73-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75

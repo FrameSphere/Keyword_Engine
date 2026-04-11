@@ -13,18 +13,22 @@ FRONTEND_URL = "https://keyscope.pages.dev"
 HF_SPACES_URL = "https://REPLACE-WITH-YOUR-HF-SPACE.hf.space"
 # Stripe Price IDs (kein Secret – darf hier stehen)
 STRIPE_PRICE_ID         = "price_1THsunEC9c8leIGWHkmXcPWh"
-# Yearly price = 10x monthly (e.g. €89.88/yr ≈ €7.49/mo). Add in Stripe Dashboard, then replace:
 STRIPE_PRICE_ID_YEARLY  = "price_1TJ0dVEC9c8leIGWJzCi2gRt"
 # OAuth Client IDs (public – safe to commit)
 GOOGLE_CLIENT_ID = "751090504987-6ahquvu1kue4n2uakf8fc4ttniueh1bk.apps.googleusercontent.com"
 GITHUB_CLIENT_ID = "Ov23liWsn8wqHUtcO4vl"
+# FrameSphere SSO (public vars – safe to commit)
+FRAMESPHERE_URL      = "https://frame-sphere.vercel.app"
+FRAMESPHERE_API_URL  = "https://framesphere-backend.vercel.app/api"
+FRAMESPHERE_CLIENT_ID = "keyword-engine"
 
 # Secrets (per wrangler secret put):
-# STRIPE_SECRET_KEY      – sk_live_... oder sk_test_...
-# STRIPE_WEBHOOK_SECRET  – whsec_...
-# RESEND_API_KEY         – re_... (resend.com, free 3k emails/month, 100/day)
-# GOOGLE_CLIENT_SECRET   – from console.cloud.google.com
-# GITHUB_CLIENT_SECRET   – from github.com/settings/applications
+# STRIPE_SECRET_KEY          – sk_live_... oder sk_test_...
+# STRIPE_WEBHOOK_SECRET      – whsec_...
+# RESEND_API_KEY             – re_... (resend.com, free 3k emails/month, 100/day)
+# GOOGLE_CLIENT_SECRET       – from console.cloud.google.com
+# GITHUB_CLIENT_SECRET       – from github.com/settings/applications
+# FRAMESPHERE_CLIENT_SECRET  – gleicher Wert wie SSO_KEYWORDENGINE_SECRET in FrameSphere
 
 [dev]
 port = 8787

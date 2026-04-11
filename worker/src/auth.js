@@ -8,7 +8,8 @@
 // POST /auth/resend-verification
 // GET  /auth/oauth/google   → redirect to Google
 // GET  /auth/oauth/github   → redirect to GitHub
-// POST /auth/oauth/exchange → exchange code for session
+// POST /auth/oauth/exchange → exchange code for session (Google, GitHub, FrameSphere)
+// GET  /auth/framesphere    → initiate FrameSphere SSO
 // ============================================================
 
 import { json, err, uuid, hashPassword, verifyPassword, generateToken, sessionExpiry } from './utils.js';
@@ -32,9 +33,7 @@ async function sendVerificationEmail(env, email, token) {
         <tr><td align="center">
           <table width="520" cellpadding="0" cellspacing="0"
                  style="background:#111827;border-radius:16px;border:1px solid rgba(255,255,255,0.08);overflow:hidden;">
-            <!-- Header gradient bar -->
             <tr><td style="height:4px;background:linear-gradient(90deg,#2563EB,#7C3AED);"></td></tr>
-            <!-- Logo -->
             <tr><td style="padding:32px 40px 0;text-align:center;">
               <table cellpadding="0" cellspacing="0" style="display:inline-table;">
                 <tr>
@@ -42,12 +41,11 @@ async function sendVerificationEmail(env, email, token) {
                     <span style="color:white;font-weight:700;font-size:13px;">KS</span>
                   </td>
                   <td style="padding-left:10px;vertical-align:middle;">
-                    <span style="color:white;font-weight:700;font-size:18px;">Key<span style="background:linear-gradient(135deg,#2563EB,#7C3AED);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Scope</span></span>
+                    <span style="color:white;font-weight:700;font-size:18px;">KeyScope</span>
                   </td>
                 </tr>
               </table>
             </td></tr>
-            <!-- Body -->
             <tr><td style="padding:28px 40px 12px;">
               <h1 style="color:white;font-size:22px;font-weight:700;margin:0 0 8px;">Confirm your email address</h1>
               <p style="color:#94a3b8;font-size:14px;line-height:1.6;margin:0 0 24px;">
@@ -63,11 +61,9 @@ async function sendVerificationEmail(env, email, token) {
                 This link expires in 24 hours. If you didn't create an account, you can safely ignore this email.
               </p>
             </td></tr>
-            <!-- Divider -->
             <tr><td style="padding:0 40px;">
               <div style="height:1px;background:rgba(255,255,255,0.06);margin:20px 0;"></div>
             </td></tr>
-            <!-- Footer -->
             <tr><td style="padding:0 40px 28px;">
               <p style="color:#334155;font-size:11px;margin:0;line-height:1.6;">
                 Or copy this link into your browser:<br>
@@ -89,7 +85,7 @@ async function sendVerificationEmail(env, email, token) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'KeyScope <onboarding@resend.dev>', // TODO: switch to noreply@framesphere.com after DNS verification
+      from: 'KeyScope <onboarding@resend.dev>',
       to:   [email],
       subject: 'Confirm your KeyScope email address',
       html,
@@ -99,7 +95,6 @@ async function sendVerificationEmail(env, email, token) {
 
 // ── Store a verification token ────────────────────────────────
 async function createVerificationToken(env, userId) {
-  // Invalidate old tokens for this user
   await env.DB.prepare(`DELETE FROM email_verifications WHERE user_id = ?`).bind(userId).run();
 
   const token     = generateToken(32);
@@ -114,21 +109,18 @@ async function createVerificationToken(env, userId) {
   return token;
 }
 
-// ── Upsert user from OAuth provider ──────────────────────────
-async function upsertOAuthUser(env, { email, provider, providerId, name }) {
-  // Check by oauth_id + provider first, then fall back to email
+// ── Upsert user from Google / GitHub OAuth ────────────────────
+async function upsertOAuthUser(env, { email, provider, providerId }) {
   let user = await env.DB.prepare(
     `SELECT id, email, plan FROM users WHERE oauth_provider = ? AND oauth_id = ? LIMIT 1`
   ).bind(provider, providerId).first();
 
   if (!user) {
-    // Check if email already exists (might have registered with password)
     user = await env.DB.prepare(
       `SELECT id, email, plan FROM users WHERE email = ? LIMIT 1`
     ).bind(email.toLowerCase()).first();
 
     if (user) {
-      // Link OAuth to existing account
       await env.DB.prepare(`
         UPDATE users SET oauth_provider = ?, oauth_id = ?, email_verified = 1 WHERE id = ?
       `).bind(provider, providerId, user.id).run();
@@ -136,13 +128,64 @@ async function upsertOAuthUser(env, { email, provider, providerId, name }) {
   }
 
   if (!user) {
-    // New user via OAuth – auto-verified
     const userId    = uuid();
     const profileId = uuid();
     await env.DB.prepare(`
       INSERT INTO users (id, email, password, plan, email_verified, oauth_provider, oauth_id)
       VALUES (?, ?, NULL, 'free', 1, ?, ?)
     `).bind(userId, email.toLowerCase(), provider, providerId).run();
+
+    await env.DB.prepare(`
+      INSERT INTO profiles (id, user_id, name, language, config)
+      VALUES (?, ?, 'My first profile', 'en', '{}')
+    `).bind(profileId, userId).run();
+
+    user = { id: userId, email: email.toLowerCase(), plan: 'free' };
+  }
+
+  const token = generateToken();
+  await env.DB.prepare(`
+    INSERT INTO sessions (id, user_id, token, expires_at)
+    VALUES (?, ?, ?, ?)
+  `).bind(uuid(), user.id, token, sessionExpiry(72)).run();
+
+  const fullUser = await env.DB.prepare(
+    `SELECT id, email, plan, email_verified FROM users WHERE id = ? LIMIT 1`
+  ).bind(user.id).first();
+
+  return { token, user: fullUser };
+}
+
+// ── Upsert user from FrameSphere SSO ──────────────────────────
+// Uses dedicated framesphere_user_id column – no conflict with Google/GitHub columns.
+async function upsertFrameSphereUser(env, { fsId, email }) {
+  // 1. Lookup by FrameSphere ID (fastest path – already connected before)
+  let user = await env.DB.prepare(
+    `SELECT id, email, plan FROM users WHERE framesphere_user_id = ? LIMIT 1`
+  ).bind(fsId).first();
+
+  // 2. Lookup by email (user may already exist via password or Google/GitHub)
+  if (!user) {
+    user = await env.DB.prepare(
+      `SELECT id, email, plan FROM users WHERE email = ? LIMIT 1`
+    ).bind(email.toLowerCase()).first();
+
+    if (user) {
+      // Link FrameSphere to existing account
+      await env.DB.prepare(
+        `UPDATE users SET framesphere_user_id = ?, email_verified = 1 WHERE id = ?`
+      ).bind(fsId, user.id).run();
+    }
+  }
+
+  // 3. Create brand-new user (first-ever login via FrameSphere)
+  if (!user) {
+    const userId    = uuid();
+    const profileId = uuid();
+    await env.DB.prepare(`
+      INSERT INTO users (id, email, password, plan, email_verified, framesphere_user_id)
+      VALUES (?, ?, NULL, 'free', 1, ?)
+    `).bind(userId, email.toLowerCase(), fsId).run();
 
     await env.DB.prepare(`
       INSERT INTO profiles (id, user_id, name, language, config)
@@ -159,12 +202,11 @@ async function upsertOAuthUser(env, { email, provider, providerId, name }) {
     VALUES (?, ?, ?, ?)
   `).bind(uuid(), user.id, token, sessionExpiry(72)).run();
 
-  // Fetch fresh user row (may have been just inserted)
   const fullUser = await env.DB.prepare(
     `SELECT id, email, plan, email_verified FROM users WHERE id = ? LIMIT 1`
   ).bind(user.id).first();
 
-  return { token, user: fullUser };
+  return { token, user: { ...fullUser, email_verified: !!fullUser.email_verified } };
 }
 
 // ── Main Route Handler ────────────────────────────────────────
@@ -190,20 +232,17 @@ export async function handleAuth(request, env, path) {
       VALUES (?, ?, ?, 'free', 0)
     `).bind(userId, email.toLowerCase(), hash).run();
 
-    // Default profile
     await env.DB.prepare(`
       INSERT INTO profiles (id, user_id, name, language, config)
       VALUES (?, ?, 'My first profile', 'en', '{}')
     `).bind(uuid(), userId).run();
 
-    // Session (user can use app while waiting for verification)
     const token = generateToken();
     await env.DB.prepare(`
       INSERT INTO sessions (id, user_id, token, expires_at)
       VALUES (?, ?, ?, ?)
     `).bind(uuid(), userId, token, sessionExpiry(72)).run();
 
-    // Send verification email (async, don't block)
     const verifyToken = await createVerificationToken(env, userId);
     ctx_sendEmail: {
       try {
@@ -231,8 +270,7 @@ export async function handleAuth(request, env, path) {
 
     if (!user) return err('Invalid credentials', 401);
 
-    // OAuth-only accounts have no password
-    if (!user.password) return err('This account uses Google or GitHub sign-in. Please use the OAuth button.', 400);
+    if (!user.password) return err('This account uses Google, GitHub, or FrameSphere sign-in. Please use the sign-in button.', 400);
 
     if (!(await verifyPassword(password, user.password))) {
       return err('Invalid credentials', 401);
@@ -287,7 +325,6 @@ export async function handleAuth(request, env, path) {
     `).bind(token).first();
 
     if (!record) {
-      // Redirect to frontend with error
       return Response.redirect(`${FRONTEND}/auth/verify-email?status=invalid`, 302);
     }
 
@@ -323,12 +360,28 @@ export async function handleAuth(request, env, path) {
     return json({ ok: true, message: 'Verification email sent' });
   }
 
+  // ── FrameSphere SSO: Initiation ────────────────────────────
+  // GET /auth/framesphere
+  // Redirects the browser to FrameSphere's consent screen.
+  if (path === '/auth/framesphere' && method === 'GET') {
+    const fsUrl      = env.FRAMESPHERE_URL || 'https://frame-sphere.vercel.app';
+    const clientId   = env.FRAMESPHERE_CLIENT_ID || 'keyword-engine';
+    const redirectUri = `${FRONTEND}/auth/callback`;
+
+    const params = new URLSearchParams({
+      client_id:    clientId,
+      redirect_uri: redirectUri,
+    });
+
+    return Response.redirect(`${fsUrl}/sso/authorize?${params}`, 302);
+  }
+
   // ── OAuth: Initiate Google ─────────────────────────────────
   if (path === '/auth/oauth/google' && method === 'GET') {
     const clientId    = env.GOOGLE_CLIENT_ID;
     const redirectUri = `${FRONTEND}/auth/callback`;
     const scope       = 'openid email profile';
-    const state       = generateToken(16); // CSRF protection
+    const state       = generateToken(16);
     const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
     url.searchParams.set('client_id',     clientId);
     url.searchParams.set('redirect_uri',  redirectUri);
@@ -361,12 +414,43 @@ export async function handleAuth(request, env, path) {
     try {
       let email, providerId;
 
+      // ── FrameSphere SSO ──────────────────────────────────
+      if (provider === 'framesphere') {
+        const fsApiUrl     = env.FRAMESPHERE_API_URL || 'https://framesphere-backend.vercel.app/api';
+        const clientId     = env.FRAMESPHERE_CLIENT_ID || 'keyword-engine';
+        const clientSecret = env.FRAMESPHERE_CLIENT_SECRET;
+
+        if (!clientSecret) return err('FrameSphere SSO not configured on this server', 500);
+
+        const tokenRes = await fetch(`${fsApiUrl}/sso/token`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, client_id: clientId, client_secret: clientSecret }),
+        });
+
+        const tokenData = await tokenRes.json();
+
+        if (!tokenRes.ok || !tokenData.success) {
+          throw new Error(tokenData.message || 'FrameSphere token exchange failed');
+        }
+
+        const fsUser = tokenData.user; // { id, name, email, role, avatarUrl }
+        if (!fsUser?.email) return err('Could not retrieve email from FrameSphere');
+
+        const result = await upsertFrameSphereUser(env, {
+          fsId:  String(fsUser.id),
+          email: fsUser.email,
+        });
+
+        return json({ ok: true, ...result });
+      }
+
+      // ── Google ───────────────────────────────────────────
       if (provider === 'google') {
         const clientId     = env.GOOGLE_CLIENT_ID;
         const clientSecret = env.GOOGLE_CLIENT_SECRET;
         if (!clientId || !clientSecret) return err('Google OAuth not configured', 500);
 
-        // Exchange code → tokens
         const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -379,7 +463,6 @@ export async function handleAuth(request, env, path) {
         const tokens = await tokenRes.json();
         if (!tokenRes.ok || tokens.error) throw new Error(tokens.error_description || 'Google token exchange failed');
 
-        // Get user info
         const infoRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
           headers: { Authorization: `Bearer ${tokens.access_token}` },
         });
@@ -387,12 +470,12 @@ export async function handleAuth(request, env, path) {
         email      = info.email;
         providerId = info.id;
 
+      // ── GitHub ───────────────────────────────────────────
       } else if (provider === 'github') {
         const clientId     = env.GITHUB_CLIENT_ID;
         const clientSecret = env.GITHUB_CLIENT_SECRET;
         if (!clientId || !clientSecret) return err('GitHub OAuth not configured', 500);
 
-        // Exchange code → access token
         const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
           method: 'POST',
           headers: {
@@ -407,7 +490,6 @@ export async function handleAuth(request, env, path) {
         const tokenData = await tokenRes.json();
         if (tokenData.error) throw new Error(tokenData.error_description || 'GitHub token exchange failed');
 
-        // Get user info
         const infoRes = await fetch('https://api.github.com/user', {
           headers: {
             Authorization: `Bearer ${tokenData.access_token}`,
@@ -417,7 +499,6 @@ export async function handleAuth(request, env, path) {
         const info = await infoRes.json();
         providerId = String(info.id);
 
-        // GitHub may have private email – fetch it explicitly
         if (!info.email) {
           const emailsRes = await fetch('https://api.github.com/user/emails', {
             headers: {
