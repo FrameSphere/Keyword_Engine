@@ -23,6 +23,7 @@ import Privacy       from './pages/Privacy.jsx';
 import Terms         from './pages/Terms.jsx';
 import Legal         from './pages/Legal.jsx';
 import AuthCallback  from './pages/AuthCallback.jsx';
+import SSOWelcome    from './pages/SSOWelcome.jsx';
 
 function RequireAuth({ children }) {
   const { user, loading } = useAuth();
@@ -46,9 +47,13 @@ export default function App() {
       <Route path="/legal"   element={<Layout><Legal /></Layout>} />
       <Route path="/login"    element={<Login />} />
       <Route path="/register"  element={<Register />} />
-      {/* OAuth callback + email verification – no Layout wrapper, standalone pages */}
+
+      {/* OAuth callback + email verification – standalone, no Layout */}
       <Route path="/auth/callback"     element={<AuthCallback />} />
       <Route path="/auth/verify-email" element={<AuthCallback />} />
+
+      {/* FrameSphere SSO Welcome – shown after successful FS login */}
+      <Route path="/sso-welcome" element={<SSOWelcome />} />
 
       {/* Docs */}
       <Route path="/docs" element={<Layout><DocsLayout /></Layout>}>

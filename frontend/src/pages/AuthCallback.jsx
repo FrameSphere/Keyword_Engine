@@ -1,7 +1,7 @@
 // ============================================================
 // KeyScope – OAuth Callback Page
 // Route: /auth/callback
-// Handles the code exchange after Google/GitHub redirect.
+// Handles the code exchange after Google / GitHub / FrameSphere redirect.
 // Also handles: /auth/verify-email?status=success|invalid
 // ============================================================
 
@@ -87,8 +87,8 @@ export default function AuthCallback() {
     }
 
     // ── OAuth code exchange ───────────────────────────────────
-    const code     = searchParams.get('code');
-    const error    = searchParams.get('error');
+    const code  = searchParams.get('code');
+    const error = searchParams.get('error');
 
     if (error) {
       setStatus('error');
@@ -102,7 +102,7 @@ export default function AuthCallback() {
       return;
     }
 
-    // Determine provider from state or referrer (stored in sessionStorage before redirect)
+    // Provider stored in sessionStorage before the redirect
     const provider = sessionStorage.getItem('oauth_provider') || 'google';
     sessionStorage.removeItem('oauth_provider');
 
@@ -111,6 +111,15 @@ export default function AuthCallback() {
     api.auth.oauthExchange(provider, code, redirectUri)
       .then(data => {
         loginWithToken(data.token, data.user);
+        setStatus('success');
+
+        // FrameSphere SSO → always show the dedicated SSO Welcome animation
+        if (provider === 'framesphere') {
+          navigate('/sso-welcome', { replace: true });
+          return;
+        }
+
+        // Google / GitHub → show WelcomeModal only for brand-new users
         const isFirst = !localStorage.getItem(`ks_welcomed_${data.user.id}`);
         if (isFirst) {
           localStorage.setItem(`ks_welcomed_${data.user.id}`, '1');
@@ -118,7 +127,6 @@ export default function AuthCallback() {
         } else {
           navigate('/app', { replace: true });
         }
-        setStatus('success');
       })
       .catch(e => {
         setStatus('error');
@@ -134,12 +142,12 @@ export default function AuthCallback() {
     return <Shell><VerifyEmailResult status="invalid" /></Shell>;
   }
 
-  // ── Welcome modal for new OAuth users ─────────────────────
+  // ── Welcome modal for new Google/GitHub users ──────────────
   if (showWelcome) {
     return <WelcomeModal onClose={() => { setShowWelcome(false); navigate('/app'); }} />;
   }
 
-  // ── OAuth loading / error ─────────────────────────────────
+  // ── Loading ────────────────────────────────────────────────
   if (status === 'loading') {
     return (
       <Shell>
@@ -149,6 +157,7 @@ export default function AuthCallback() {
     );
   }
 
+  // ── Error ──────────────────────────────────────────────────
   if (status === 'error') {
     return (
       <Shell>
@@ -167,7 +176,7 @@ export default function AuthCallback() {
     );
   }
 
-  // status === 'success' → navigate happens in useEffect, brief flash
+  // status === 'success' → navigate happens in useEffect
   return <Shell><Spinner /></Shell>;
 }
 
