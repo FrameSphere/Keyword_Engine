@@ -6,42 +6,78 @@
 
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Zap, Layers, Database, CheckCircle, ArrowRight } from 'lucide-react';
 
 const ease = 'cubic-bezier(0.16, 1, 0.3, 1)';
 
+// ── Inline SVG Icons (no lucide-react dependency) ────────────
+const IconSearch = ({ size = 18, color = 'currentColor' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+  </svg>
+);
+const IconZap = ({ size = 18, color = 'currentColor' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+  </svg>
+);
+const IconLayers = ({ size = 18, color = 'currentColor' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+    <polyline points="2 17 12 22 22 17"/>
+    <polyline points="2 12 12 17 22 12"/>
+  </svg>
+);
+const IconDatabase = ({ size = 18, color = 'currentColor' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <ellipse cx="12" cy="5" rx="9" ry="3"/>
+    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+  </svg>
+);
+const IconCheck = ({ size = 15, color = 'currentColor' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+);
+const IconArrowRight = ({ size = 18, color = 'currentColor' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="5" y1="12" x2="19" y2="12"/>
+    <polyline points="12 5 19 12 12 19"/>
+  </svg>
+);
+
 const FEATURES = [
   {
-    icon: Search,
-    title: 'TF-IDF Keyword Engine',
-    desc:  'Domänenspezifische Gewichtungen — trainiert auf deinen eigenen Texten für maximale Relevanz.',
-    color: '#60a5fa',
-    bg:    'rgba(96,165,250,0.08)',
-    border:'rgba(96,165,250,0.2)',
+    Icon:   IconSearch,
+    title:  'TF-IDF Keyword Engine',
+    desc:   'Domänenspezifische Gewichtungen — trainiert auf deinen eigenen Texten für maximale Relevanz.',
+    color:  '#60a5fa',
+    bg:     'rgba(96,165,250,0.08)',
+    border: 'rgba(96,165,250,0.2)',
   },
   {
-    icon: Zap,
-    title: 'AI-Powered Modus',
-    desc:  'Semantische Keyword-Extraktion via fine-tuned HuggingFace-Modell — über reine Frequenzanalyse hinaus.',
-    color: '#a78bfa',
-    bg:    'rgba(167,139,250,0.08)',
-    border:'rgba(167,139,250,0.2)',
+    Icon:   IconZap,
+    title:  'AI-Powered Modus',
+    desc:   'Semantische Keyword-Extraktion via fine-tuned HuggingFace-Modell — über reine Frequenzanalyse hinaus.',
+    color:  '#a78bfa',
+    bg:     'rgba(167,139,250,0.08)',
+    border: 'rgba(167,139,250,0.2)',
   },
   {
-    icon: Layers,
-    title: 'Longtail Phrases',
-    desc:  'Gewichtetes Bigram & Trigram-System — jede Phrase gescored nach semantischer Relevanz.',
-    color: '#f472b6',
-    bg:    'rgba(244,114,182,0.08)',
-    border:'rgba(244,114,182,0.2)',
+    Icon:   IconLayers,
+    title:  'Longtail Phrases',
+    desc:   'Gewichtetes Bigram & Trigram-System — jede Phrase gescored nach semantischer Relevanz.',
+    color:  '#f472b6',
+    bg:     'rgba(244,114,182,0.08)',
+    border: 'rgba(244,114,182,0.2)',
   },
   {
-    icon: Database,
-    title: 'FrameSphere Connected',
-    desc:  'Dein FrameSphere-Konto ist verknüpft — ein Account, alle Tools, ein Login.',
-    color: '#34d399',
-    bg:    'rgba(52,211,153,0.08)',
-    border:'rgba(52,211,153,0.2)',
+    Icon:   IconDatabase,
+    title:  'FrameSphere Connected',
+    desc:   'Dein FrameSphere-Konto ist verknüpft — ein Account, alle Tools, ein Login.',
+    color:  '#34d399',
+    bg:     'rgba(52,211,153,0.08)',
+    border: 'rgba(52,211,153,0.2)',
   },
 ];
 
@@ -61,15 +97,14 @@ function KeyScopeLogo({ visible }) {
         boxShadow: '0 0 40px rgba(37,99,235,0.55), 0 8px 32px rgba(0,0,0,0.4)',
         position: 'relative',
       }}>
-        {/* KS icon that mirrors the actual KeyScope SVG logo style */}
         <svg width="38" height="38" viewBox="0 0 64 64" fill="none">
-          <circle cx="26" cy="32" r="13" stroke="white" strokeWidth="4" fill="none" opacity="0.95" />
-          <circle cx="26" cy="32" r="4.5" fill="white" opacity="0.85" />
-          <line x1="35" y1="32" x2="52" y2="32" stroke="white" strokeWidth="3.5" strokeLinecap="round" opacity="0.9" />
-          <line x1="44" y1="32" x2="44" y2="39" stroke="white" strokeWidth="3.5" strokeLinecap="round" opacity="0.9" />
-          <line x1="50" y1="32" x2="50" y2="37" stroke="white" strokeWidth="3.5" strokeLinecap="round" opacity="0.9" />
+          <circle cx="26" cy="32" r="13" stroke="white" strokeWidth="4" fill="none" opacity="0.95"/>
+          <circle cx="26" cy="32" r="4.5" fill="white" opacity="0.85"/>
+          <line x1="35" y1="32" x2="52" y2="32" stroke="white" strokeWidth="3.5" strokeLinecap="round" opacity="0.9"/>
+          <line x1="44" y1="32" x2="44" y2="39" stroke="white" strokeWidth="3.5" strokeLinecap="round" opacity="0.9"/>
+          <line x1="50" y1="32" x2="50" y2="37" stroke="white" strokeWidth="3.5" strokeLinecap="round" opacity="0.9"/>
         </svg>
-        <div style={{ position: 'absolute', inset: -1, borderRadius: 21, background: 'linear-gradient(135deg, rgba(255,255,255,0.2), transparent)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', inset: -1, borderRadius: 21, background: 'linear-gradient(135deg, rgba(255,255,255,0.2), transparent)', pointerEvents: 'none' }}/>
       </div>
       <div style={{ textAlign: 'center' }}>
         <div style={{ color: '#f1f5f9', fontWeight: 700, fontSize: 15 }}>KeyScope</div>
@@ -96,7 +131,7 @@ function FrameSphereLogo({ visible }) {
         position: 'relative',
       }}>
         <span style={{ color: 'white', fontWeight: 900, fontSize: 26, letterSpacing: '-1px' }}>FS</span>
-        <div style={{ position: 'absolute', inset: -1, borderRadius: 21, background: 'linear-gradient(135deg, rgba(255,255,255,0.2), transparent)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', inset: -1, borderRadius: 21, background: 'linear-gradient(135deg, rgba(255,255,255,0.2), transparent)', pointerEvents: 'none' }}/>
       </div>
       <div style={{ textAlign: 'center' }}>
         <div style={{ color: '#f1f5f9', fontWeight: 700, fontSize: 15 }}>FrameSphere</div>
@@ -117,7 +152,7 @@ function ConnectionLine({ phase }) {
         position: 'relative', width: '100%', height: 2,
         background: 'rgba(255,255,255,0.05)', borderRadius: 2, overflow: 'hidden',
       }}>
-        {/* Animated fill – KeyScope blue→violet */}
+        {/* Fill bar */}
         <div style={{
           position: 'absolute', inset: 0, borderRadius: 2,
           background: 'linear-gradient(90deg, #2563EB, #7C3AED)',
@@ -125,7 +160,7 @@ function ConnectionLine({ phase }) {
           transform: drawing ? 'scaleX(1)' : 'scaleX(0)',
           transition: drawing ? `transform 0.6s ${ease}` : 'none',
           boxShadow: drawing ? '0 0 10px rgba(124,58,237,0.8)' : 'none',
-        }} />
+        }}/>
         {/* Travelling dot */}
         {drawing && !done && (
           <div style={{
@@ -134,7 +169,7 @@ function ConnectionLine({ phase }) {
             background: 'white', boxShadow: '0 0 12px rgba(255,255,255,0.9)',
             transform: 'translateY(-50%)',
             animation: 'travelDot 0.6s ease-out forwards',
-          }} />
+          }}/>
         )}
       </div>
       {/* Check badge */}
@@ -151,14 +186,14 @@ function ConnectionLine({ phase }) {
         transition: `opacity 0.4s ${ease}, transform 0.5s ${ease}`,
         boxShadow: done ? '0 0 20px rgba(124,58,237,0.6)' : 'none',
       }}>
-        <CheckCircle size={16} color="white" strokeWidth={2.5} />
+        <IconCheck size={14} color="white" />
       </div>
     </div>
   );
 }
 
 // ── Feature Card ──────────────────────────────────────────────
-function FeatureCard({ icon: Icon, title, desc, color, bg, border, delay, visible }) {
+function FeatureCard({ Icon, title, desc, color, bg, border, delay, visible }) {
   const [hovered, setHovered] = useState(false);
   return (
     <div
@@ -219,34 +254,16 @@ export default function SSOWelcome() {
   return (
     <>
       <style>{`
-        @keyframes travelDot  { from { left: 0%;   } to { left: 100%; } }
-        @keyframes orbPulse   { 0%,100% { opacity:.35; transform:scale(1);    } 50% { opacity:.65; transform:scale(1.07); } }
+        @keyframes travelDot  { from { left: 0%; } to { left: 100%; } }
+        @keyframes orbPulse   { 0%,100% { opacity:.35; transform:scale(1); } 50% { opacity:.65; transform:scale(1.07); } }
         @keyframes shimmerBtn { 0% { background-position:-200% center; } 100% { background-position:200% center; } }
-        * { box-sizing:border-box; }
       `}</style>
 
       {/* Background */}
       <div style={{ position: 'fixed', inset: 0, background: '#030712', overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
-        {/* Blue glow – top */}
-        <div style={{
-          position: 'absolute', width: 700, height: 600, borderRadius: '50%',
-          top: '-200px', left: '50%', transform: 'translateX(-50%)',
-          background: 'radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 70%)',
-          animation: 'orbPulse 9s ease-in-out infinite',
-        }} />
-        {/* Violet glow – bottom right */}
-        <div style={{
-          position: 'absolute', width: 480, height: 480, borderRadius: '50%',
-          bottom: '-100px', right: '10%',
-          background: 'radial-gradient(circle, rgba(124,58,237,0.13) 0%, transparent 70%)',
-          animation: 'orbPulse 12s ease-in-out infinite 1.5s',
-        }} />
-        {/* Subtle grid */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          backgroundImage: 'linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
-        }} />
+        <div style={{ position: 'absolute', width: 700, height: 600, borderRadius: '50%', top: '-200px', left: '50%', transform: 'translateX(-50%)', background: 'radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 70%)', animation: 'orbPulse 9s ease-in-out infinite' }}/>
+        <div style={{ position: 'absolute', width: 480, height: 480, borderRadius: '50%', bottom: '-100px', right: '10%', background: 'radial-gradient(circle, rgba(124,58,237,0.13) 0%, transparent 70%)', animation: 'orbPulse 12s ease-in-out infinite 1.5s' }}/>
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)', backgroundSize: '60px 60px' }}/>
       </div>
 
       <main style={{
@@ -261,7 +278,7 @@ export default function SSOWelcome() {
           {/* ── Animation Block ── */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 32 }}>
 
-            {/* Logos + Connecting Line */}
+            {/* Logos + Line */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 24, justifyContent: 'center' }}>
               <KeyScopeLogo visible={showLogos} />
               <ConnectionLine phase={phase} />
@@ -277,7 +294,7 @@ export default function SSOWelcome() {
               padding: '8px 20px', borderRadius: 100,
               background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(124,58,237,0.4)',
             }}>
-              <CheckCircle size={15} color="#818cf8" />
+              <IconCheck size={15} color="#818cf8" />
               <span style={{ color: '#818cf8', fontSize: 13, fontWeight: 600 }}>Erfolgreich verbunden</span>
             </div>
 
@@ -288,16 +305,9 @@ export default function SSOWelcome() {
               transform: showHeadline ? 'translateY(0)' : 'translateY(16px)',
               transition: `opacity 0.5s ${ease} 0.1s, transform 0.5s ${ease} 0.1s`,
             }}>
-              <h1 style={{
-                fontSize: 'clamp(24px, 5vw, 36px)',
-                fontWeight: 800, color: '#f1f5f9',
-                lineHeight: 1.2, letterSpacing: '-0.5px', marginBottom: 12,
-              }}>
+              <h1 style={{ fontSize: 'clamp(24px, 5vw, 36px)', fontWeight: 800, color: '#f1f5f9', lineHeight: 1.2, letterSpacing: '-0.5px', marginBottom: 12 }}>
                 Dein FrameSphere-Konto<br />
-                <span style={{
-                  background: 'linear-gradient(90deg, #60a5fa, #a78bfa)',
-                  WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-                }}>
+                <span style={{ background: 'linear-gradient(90deg, #60a5fa, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                   ist jetzt verknüpft.
                 </span>
               </h1>
@@ -334,20 +344,18 @@ export default function SSOWelcome() {
                 animation: 'shimmerBtn 2.5s linear infinite',
                 transform: btnHovered ? 'scale(1.04) translateY(-2px)' : 'scale(1) translateY(0)',
                 transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                boxShadow: btnHovered
-                  ? '0 20px 50px rgba(124,58,237,0.45)'
-                  : '0 8px 30px rgba(37,99,235,0.3)',
+                boxShadow: btnHovered ? '0 20px 50px rgba(124,58,237,0.45)' : '0 8px 30px rgba(37,99,235,0.3)',
                 display: 'flex', alignItems: 'center', gap: 10, letterSpacing: '-0.3px',
               }}
             >
               Zum Dashboard
-              <ArrowRight
-                size={18}
-                style={{
-                  transform: btnHovered ? 'translateX(3px)' : 'translateX(0)',
-                  transition: 'transform 0.2s ease',
-                }}
-              />
+              <span style={{
+                display: 'inline-flex',
+                transform: btnHovered ? 'translateX(3px)' : 'translateX(0)',
+                transition: 'transform 0.2s ease',
+              }}>
+                <IconArrowRight size={18} color="white" />
+              </span>
             </button>
             <p style={{ color: '#1e293b', fontSize: 13 }}>
               Deine Profile und API Keys findest du im Dashboard.
