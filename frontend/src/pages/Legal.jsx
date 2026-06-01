@@ -31,7 +31,7 @@ export default function Legal() {
             <strong className="text-slate-200">Contact:</strong>{' '}
             <a href="mailto:support@keyscope.pages.dev"
                className="text-blue-400 hover:text-blue-300 transition-colors">
-              support@keyscope.pages.dev
+              framesphere@gmx.net
             </a>
           </p>
           <p>
