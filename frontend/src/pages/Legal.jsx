@@ -29,7 +29,7 @@ export default function Legal() {
           <p><strong className="text-slate-200">Country:</strong> Germany</p>
           <p>
             <strong className="text-slate-200">Contact:</strong>{' '}
-            <a href="mailto:support@keyscope.pages.dev"
+            <a href="mailto:framesphere@gmx.net"
                className="text-blue-400 hover:text-blue-300 transition-colors">
               framesphere@gmx.net
             </a>
